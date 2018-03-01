@@ -5,4 +5,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- SIDENAV STRINGS -->
+    <string name="nav_home">Home</string>
+    <string name="nav_translate">Translate a Menu</string>
+    <string name="nav_history">Menu History</string>
+    <string name="nav_help">How To Use</string>
+    <string name="nav_settings">Settings</string>
 </resources>
