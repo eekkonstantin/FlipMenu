@@ -1,0 +1,24 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="General">
+
+        <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+        <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+
+        <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+             dismiss it. -->
+        <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/list_preference_language"
+            android:entryValues="@array/list_preference_language_values"
+            android:key="pref_language"
+            android:title="@string/pref_title_language" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_location"
+            android:summary="@string/pref_description_location"
+            android:title="@string/pref_title_location" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
