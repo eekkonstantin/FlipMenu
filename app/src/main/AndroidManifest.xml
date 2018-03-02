@@ -21,7 +21,11 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".TranslatedMenuActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/title_activity_translated_menu"></activity>
     </application>
 
 </manifest>

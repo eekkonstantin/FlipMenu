@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FlipMenu.iml" filepath="$PROJECT_DIR$/FlipMenu.iml" />
+      <module fileurl="file://K:\Workspace\StudioProjects\FlipMenu\FlipMenu.iml" filepath="K:\Workspace\StudioProjects\FlipMenu\FlipMenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

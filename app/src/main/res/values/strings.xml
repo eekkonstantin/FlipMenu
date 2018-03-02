@@ -18,7 +18,7 @@
 
     <!-- Strings related to Settings -->
 
-    <!-- Example General settings -->
+    <!-- General settings -->
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_location">Enable location access</string>
@@ -38,4 +38,12 @@
         <item>zh_CN</item>
         <item>ja</item>
     </string-array>
+
+
+    <string name="title_activity_translated_menu">Menu</string>
+    <string name="title_items">Menu Items</string>
+    <string name="title_order">View Order</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
