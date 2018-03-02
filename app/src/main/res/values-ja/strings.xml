@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FanCaiDan</string>
+    <string name="settings">設定</string>
+    <string name="title_activity_settings">設定</string>
+    <string name="home">ホーム</string>
+    <string name="translate_menu">新しいメニューを翻訳する</string>
+    <string name="menu_history">メニュー歴史</string>
+    <string name="help">使い方</string>
+    <string name="pref_description_location">自動的に位置情報をメニューに追加する</string>
+    <string name="pref_title_location">位置情報サービスを許可する</string>
+    <string name="pref_title_language">アプリ言語</string>
+    <string name="title_activity_translated_menu">メニュー</string>
+    <string name="pref_header_general">アプリ設定</string>
+    <string name="menu_items">メニュー一品</string>
+    <string name="menu_order">注文詳細</string>
+</resources>
