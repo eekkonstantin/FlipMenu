@@ -161,10 +161,10 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
-                return true;
+                break;
             case R.id.nav_history:
                 startActivity(new Intent(this, TranslatedMenuActivity.class));
-                return true;
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
