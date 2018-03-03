@@ -15,7 +15,7 @@
         android:layout_below="@+id/imageView2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="57dp"
-        android:text="@string/translate_a_menu" />
+        android:text="@string/translate_menu" />
 
     <Button
         android:id="@+id/bt_how"
@@ -25,7 +25,7 @@
         android:layout_alignStart="@+id/bt_translate"
         android:layout_below="@+id/bt_translate"
         android:layout_marginTop="29dp"
-        android:text="@string/how_to_use" />
+        android:text="@string/help" />
 
     <ImageView
         android:id="@+id/imageView2"
