@@ -9,6 +9,8 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,20 +45,54 @@ public class ConfirmActivity extends AppCompatActivity {
     private static final String ANDROID_CERT_HEADER = "X-Android-Cert";
     private static final String ANDROID_PACKAGE_HEADER = "X-Android-Package";
 
+    ImageButton btCfm, btReject;
+
+    String filename;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
-        Intent i = getIntent();
-        String filename = i.getStringExtra("filepath");
+        filename = getIntent().getStringExtra("filepath");
         Uri imageUri = Uri.fromFile(new File(filename));
         preview = findViewById(R.id.img_preview);
         mImageDetails = findViewById(R.id.textView2);
         uploadImage(imageUri);
 //        Glide.with(this).load(filename).into(preview);
+        btCfm = findViewById(R.id.bt_confirm);
+        btReject = findViewById(R.id.bt_reject);
 
+        setupActions();
     }
+
+    private void setupActions() {
+        btCfm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getBaseContext(), TranslatedMenuActivity.class);
+                i.putExtra("detectedJSON", "");
+                startActivity(i);
+            }
+        });
+
+        btReject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO Bernard: delete file
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO Bernard (optional): "Confirm back? Data will be lost" kind of dialog
+        // TODO Bernard: delete file
+        super.onBackPressed();
+    }
+
+
     private void uploadImage(Uri uri) {
         if (uri != null) {
             try {
