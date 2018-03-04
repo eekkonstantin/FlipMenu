@@ -206,7 +206,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
+            case R.id.nav_translate:
+                // TODO Bernard: open camera/permissions here
+                break;
             case R.id.nav_history:
+                // TODO Kon: change to history page
                 startActivity(new Intent(this, TranslatedMenuActivity.class));
                 break;
         }
