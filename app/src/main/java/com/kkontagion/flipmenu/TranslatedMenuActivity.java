@@ -15,7 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.kkontagion.flipmenu.objects.Item;
+
+import java.util.ArrayList;
+
 public class TranslatedMenuActivity extends AppCompatActivity {
+
+    String jsonData;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -26,7 +32,7 @@ public class TranslatedMenuActivity extends AppCompatActivity {
             String tag = "";
             switch (item.getItemId()) {
                 case R.id.navigation_items:
-                    frag = ItemsFragment.newInstance("a", "b");
+                    frag = ItemsFragment.newInstance(jsonData);
                     tag = "menu";
                     break;
                 case R.id.navigation_cart:
@@ -47,12 +53,12 @@ public class TranslatedMenuActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        detectItems();
+
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.content, ItemsFragment.newInstance("a", "b"));
+        transaction.replace(R.id.content, ItemsFragment.newInstance(jsonData));
         transaction.commit();
-
-
     }
 
     @Override
@@ -73,5 +79,9 @@ public class TranslatedMenuActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void detectItems() {
+
     }
 }

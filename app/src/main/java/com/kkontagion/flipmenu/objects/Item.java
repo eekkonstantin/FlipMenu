@@ -1,10 +1,15 @@
 package com.kkontagion.flipmenu.objects;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by Kon on 4/3/2018.
  */
 
-public class Item {
+public class Item implements Serializable {
     String original, translated;
     int id, quantity;
 
