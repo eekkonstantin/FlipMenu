@@ -17,12 +17,14 @@ public class ConfirmActivity extends AppCompatActivity {
 
     ImageButton btCfm, btReject;
 
+    String filename;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
-        String filename = getIntent().getStringExtra("filepath");
+        filename = getIntent().getStringExtra("filepath");
 
         ImageView preview = (ImageView) findViewById(R.id.img_preview);
         Glide.with(this).load(filename).into(preview);
@@ -37,8 +39,25 @@ public class ConfirmActivity extends AppCompatActivity {
         btCfm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getBaseContext(), TranslatedMenuActivity.class));
+                Intent i = new Intent(getBaseContext(), TranslatedMenuActivity.class);
+                i.putExtra("detectedJSON", "");
+                startActivity(i);
             }
         });
+
+        btReject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO Bernard: delete file
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO Bernard (optional): "Confirm back? Data will be lost" kind of dialog
+        // TODO Bernard: delete file
+        super.onBackPressed();
     }
 }
