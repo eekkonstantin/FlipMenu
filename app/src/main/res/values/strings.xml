@@ -11,6 +11,10 @@
     <string name="help">How To Use</string>
     <string name="settings">Settings</string>
 
+    <!-- CONFIRM ACTIVITY STRINGS -->
+    <string name="image_picker_error">Something is wrong with that image. Pick a different one please.</string>
+    <string name="loading_message">Loading Image</string>
+
     <string name="title_activity_settings">Settings</string>
 
     <!-- General settings -->

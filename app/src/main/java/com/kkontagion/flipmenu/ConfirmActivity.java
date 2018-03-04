@@ -2,7 +2,6 @@ package com.kkontagion.flipmenu;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -107,18 +107,18 @@ public class ConfirmActivity extends AppCompatActivity {
 //                Glide.with(this).load(bitmap).into(preview);
 
             } catch (IOException e) {
-//                Log.d(TAG, "Image picking failed because " + e.getMessage());
-//                Toast.makeText(this, R.string.image_picker_error, Toast.LENGTH_LONG).show();
+                Log.d("ConfirmActivity", "Image picking failed because " + e.getMessage());
+                Toast.makeText(this, R.string.image_picker_error, Toast.LENGTH_LONG).show();
             }
         } else {
-//            Log.d(TAG, "Image picker gave us a null image.");
-//            Toast.makeText(this, R.string.image_picker_error, Toast.LENGTH_LONG).show();
+            Log.d("Confirm Activity", "Image picker gave us a null image.");
+            Toast.makeText(this, R.string.image_picker_error, Toast.LENGTH_LONG).show();
         }
     }
 
     private void callCloudVision(final Bitmap bitmap) throws IOException {
         // Switch text to loading
-//        mImageDetails.setText(R.string.loading_message);
+        mImageDetails.setText(R.string.loading_message);
 
         // Do the real work in an async task, because we need to use the network anyway
         new AsyncTask<Object, Void, String>() {
@@ -173,7 +173,7 @@ public class ConfirmActivity extends AppCompatActivity {
                         // add the features we want
                         annotateImageRequest.setFeatures(new ArrayList<Feature>() {{
                             Feature labelDetection = new Feature();
-                            labelDetection.setType("LABEL_DETECTION");
+                            labelDetection.setType("TEXT_DETECTION");
                             labelDetection.setMaxResults(10);
                             add(labelDetection);
                         }});
@@ -229,11 +229,12 @@ public class ConfirmActivity extends AppCompatActivity {
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
         String message = "I found these things:\n\n";
 
-        List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
+        List<EntityAnnotation> labels = response.getResponses().get(0).getTextAnnotations();
         if (labels != null) {
             for (EntityAnnotation label : labels) {
                 message += String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription());
                 message += "\n";
+                // TODO json, locationXY
             }
         } else {
             message += "nothing";

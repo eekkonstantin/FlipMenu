@@ -210,6 +210,14 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_translate:
                 // TODO Bernard: open camera/permissions here
+                Log.d("penis", "onNavigationItemSelected: ");
+                if(CheckingPermissionIsEnabledOrNot())
+                {
+                    accessCamera();
+                }
+                else {
+                    RequestMultiplePermission();
+                }
                 break;
             case R.id.nav_history:
                 // TODO Kon: change to history page
