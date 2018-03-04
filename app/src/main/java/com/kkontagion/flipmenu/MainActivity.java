@@ -27,6 +27,7 @@ import java.io.File;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission_group.CAMERA;
 
 public class MainActivity extends AppCompatActivity
@@ -36,9 +37,6 @@ public class MainActivity extends AppCompatActivity
 
     private String imagePath;
     private String filename;
-    private boolean camera_request = false;
-    private boolean read_request = false;
-    private boolean write_request = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +108,8 @@ public class MainActivity extends AppCompatActivity
             {
                     Manifest.permission.CAMERA,
                     READ_EXTERNAL_STORAGE,
-                    WRITE_EXTERNAL_STORAGE
+                    WRITE_EXTERNAL_STORAGE,
+                    INTERNET
             }, RequestPermissionCode);
     }
 
@@ -122,8 +121,9 @@ public class MainActivity extends AppCompatActivity
                 boolean CameraPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 boolean ReadPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                 boolean WritePermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+                boolean InternetPermission = grantResults[3] == PackageManager.PERMISSION_GRANTED;
 
-                if (CameraPermission && ReadPermission && WritePermission) {
+                if (CameraPermission && ReadPermission && WritePermission && InternetPermission) {
 //                    Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
                     accessCamera();
                 } else {
@@ -139,10 +139,12 @@ public class MainActivity extends AppCompatActivity
         int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
         int SecondPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
         int ThirdPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int FourthPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), INTERNET);
 
         return FirstPermissionResult == PackageManager.PERMISSION_GRANTED &&
                 SecondPermissionResult == PackageManager.PERMISSION_GRANTED &&
-                ThirdPermissionResult == PackageManager.PERMISSION_GRANTED ;
+                ThirdPermissionResult == PackageManager.PERMISSION_GRANTED &&
+                FourthPermissionResult == PackageManager.PERMISSION_GRANTED  ;
     }
 
     @Override
