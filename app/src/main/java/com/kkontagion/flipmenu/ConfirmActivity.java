@@ -4,17 +4,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+//import com.bumptech.glide.Glide;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpTransport;
@@ -30,6 +33,12 @@ import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
 
+//translate
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
+
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -38,14 +47,23 @@ import java.util.List;
 import java.util.Locale;
 
 public class ConfirmActivity extends AppCompatActivity {
+    //Text detection variables
     private TextView mImageDetails;
     private ImageView preview;
+    //Translation variables
+    TextView textView;
+    final Handler textViewHandler = new Handler();
 
+    //Cloudvision API variables
     private static final String CLOUD_VISION_API_KEY = "AIzaSyAHRYnKmAX72ofF7HVTSvFkSmcrNRvP8BM";
     private static final String ANDROID_CERT_HEADER = "X-Android-Cert";
     private static final String ANDROID_PACKAGE_HEADER = "X-Android-Package";
 
+    private String jsonTextDetect, jsonTranslate;
+
     ImageButton btCfm, btReject;
+    Spinner spinner;
+    ArrayAdapter<CharSequence> adapter;
 
     String filename;
 
@@ -53,17 +71,29 @@ public class ConfirmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
+        //Spinner
+        spinner = findViewById(R.id.sp_lang);
+        adapter = ArrayAdapter.createFromResource(this,
+                R.array.list_preference_language, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
+        textView =  findViewById(R.id.textView3);
+
+        //Image handling
         filename = getIntent().getStringExtra("filepath");
         Uri imageUri = Uri.fromFile(new File(filename));
         preview = findViewById(R.id.img_preview);
         mImageDetails = findViewById(R.id.textView2);
         uploadImage(imageUri);
-//        Glide.with(this).load(filename).into(preview);
+
+        //Buttons
         btCfm = findViewById(R.id.bt_confirm);
         btReject = findViewById(R.id.bt_reject);
+        btCfm.setEnabled(false);
+        btReject.setEnabled(false);
 
-        setupActions();
+//        setupActions();
     }
 
     private void setupActions() {
@@ -71,7 +101,9 @@ public class ConfirmActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getBaseContext(), TranslatedMenuActivity.class);
-                i.putExtra("detectedJSON", "");
+
+                i.putExtra("detectedJSON", jsonTextDetect);
+                i.putExtra("translatedJSON", jsonTranslate);
                 startActivity(i);
             }
         });
@@ -104,7 +136,6 @@ public class ConfirmActivity extends AppCompatActivity {
 
                 callCloudVision(bitmap);
                 preview.setImageBitmap(bitmap);
-//                Glide.with(this).load(bitmap).into(preview);
 
             } catch (IOException e) {
                 Log.d("ConfirmActivity", "Image picking failed because " + e.getMessage());
@@ -189,7 +220,9 @@ public class ConfirmActivity extends AppCompatActivity {
                     Log.d("hello", "created Cloud Vision request object, sending request");
 
                     BatchAnnotateImagesResponse response = annotateRequest.execute();
-                    return convertResponseToString(response);
+                    jsonTextDetect = response.toString();
+                    convertResponseToString(response);
+                    return response.toString();
 
                 } catch (GoogleJsonResponseException e) {
                     Log.d("hello", "failed to make API request because " + e.getContent());
@@ -207,7 +240,6 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
     public Bitmap scaleBitmapDown(Bitmap bitmap, int maxDimension) {
-
         int originalWidth = bitmap.getWidth();
         int originalHeight = bitmap.getHeight();
         int resizedWidth = maxDimension;
@@ -239,8 +271,41 @@ public class ConfirmActivity extends AppCompatActivity {
         } else {
             message += "nothing";
         }
+        final String messageFinal = message;
+        //Translate
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                TranslateOptions options = TranslateOptions.newBuilder()
+                        .setApiKey(CLOUD_VISION_API_KEY)
+                        .build();
+                Translate translate = options.getService();
+                final Translation translation =
+                        translate.translate(messageFinal,
+                                Translate.TranslateOption.targetLanguage("de"));
+
+                jsonTranslate = translation.getTranslatedText();
+                textViewHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (textView != null) {
+                            textView.setText(translation.getTranslatedText());
+                        }
+                        allDone();
+                    }
+                });
+                return null;
+            }
+        }.execute();
 
         return message;
+    }
+
+    public void allDone() {
+        btCfm.setEnabled(true);
+        btReject.setEnabled(true);
+
+        setupActions();
     }
 
 }
