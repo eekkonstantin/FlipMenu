@@ -3,10 +3,13 @@ package com.kkontagion.flipmenu;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -21,13 +24,22 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.Manifest.permission_group.CAMERA;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int MY_CAMERA_REQUEST_CODE = 100;
-    private static final int CAMERA_PIC_REQUEST = 200;
+    private static final int RequestPermissionCode = 7;
+
+    private String imagePath;
+    private String filename;
+    private boolean camera_request = false;
+    private boolean read_request = false;
+    private boolean write_request = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,18 +49,14 @@ public class MainActivity extends AppCompatActivity
 
         Button clickButton = (Button) findViewById(R.id.bt_translate);
         clickButton.setOnClickListener( new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA},MY_CAMERA_REQUEST_CODE);
+                if(CheckingPermissionIsEnabledOrNot())
+                {
+                    accessCamera();
                 }
-                else if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},MY_CAMERA_REQUEST_CODE);
-                }
-                else{
-                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                    startActivityForResult(intent, CAMERA_PIC_REQUEST);
+                else {
+                    RequestMultiplePermission();
                 }
             }
         });
@@ -63,59 +71,95 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void accessCamera() {
+            File mainDirectory = new File( Environment.getExternalStorageDirectory() + "/fancaidan");
+            if (!mainDirectory.exists()) {
+                if (mainDirectory.mkdirs()) {
+                    Log.d("Main Directory Created", "Successfully created the parent dir:" + mainDirectory.getName());
+                } else {
+                    Log.d("Directory Not Created", "Failed to create the parent dir:" + mainDirectory.getName());
+                }
+            }
+
+            File photosFileDirectory = new File(Environment.getExternalStorageDirectory() + "/fancaidan/photos");
+            if (!photosFileDirectory.exists()) {
+                if (photosFileDirectory.mkdirs()) {
+                    Log.d("Photos Dir Created", "Successfully created the parent dir:" + photosFileDirectory.getName());
+                } else {
+                    Log.d("Photos Dir Not Created", "Failed to create the parent dir:" + photosFileDirectory.getName());
+                }
+            }
+
+            Long tsLong = System.currentTimeMillis()/1000;
+            String ts = tsLong.toString();
+            filename = ts+".png";
+
+            imagePath = photosFileDirectory.getAbsolutePath() + "/" + filename;
+            File imageFile = new File(imagePath);
+
+            Uri outputFileUri = FileProvider.getUriForFile(MainActivity.this, BuildConfig.APPLICATION_ID + ".provider",imageFile);
+
+            Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+            intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, outputFileUri);
+            startActivityForResult(intent, RequestPermissionCode);
+    }
+
+    private void RequestMultiplePermission() {
+    // Creating String Array with Permissions.
+    ActivityCompat.requestPermissions(MainActivity.this, new String[]
+            {
+                    Manifest.permission.CAMERA,
+                    READ_EXTERNAL_STORAGE,
+                    WRITE_EXTERNAL_STORAGE
+            }, RequestPermissionCode);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Camera Permission Granted", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Camera Permission Denied", Toast.LENGTH_LONG).show();
+        if(requestCode == RequestPermissionCode) {
+            if (grantResults.length > 0) {
+                boolean CameraPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean ReadPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                boolean WritePermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+
+                if (CameraPermission && ReadPermission && WritePermission) {
+//                    Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
+                    accessCamera();
+                } else {
+                    Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
+
+                }
             }
+
         }
+    }
+
+    public boolean CheckingPermissionIsEnabledOrNot() {
+        int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
+        int SecondPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
+        int ThirdPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+
+        return FirstPermissionResult == PackageManager.PERMISSION_GRANTED &&
+                SecondPermissionResult == PackageManager.PERMISSION_GRANTED &&
+                ThirdPermissionResult == PackageManager.PERMISSION_GRANTED ;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if(requestCode == 200)
+        if(requestCode == RequestPermissionCode)
         {
-            if(resultCode == RESULT_OK){
-                Long tsLong = System.currentTimeMillis()/1000;
-                String ts = tsLong.toString();
-                String filename = ts+".png";
-
-                File directory = new File(Environment.getExternalStorageDirectory() + "/fancaidan");
-
-                if (!directory.exists()) {
-                    if (directory.mkdirs()) {
-                        Log.d("hi", "Successfully created the parent dir:" + directory.getName());
-                    } else {
-                        Log.d("bye", "Failed to create the parent dir:" + directory.getName());
-                    }
-                }
-
-                File dest = new File(directory, filename);
-
-                Bitmap bitmap = (Bitmap)data.getExtras().get("data");
-                try {
-                    FileOutputStream out = new FileOutputStream(dest);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-                    out.flush();
-                    out.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            else{
-                Toast.makeText(getApplicationContext(), "Picture Not taken", Toast.LENGTH_LONG);
+            if(resultCode == RESULT_OK) {
+                File image = new File(imagePath);
+                Toast.makeText(this, imagePath, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, ConfirmActivity.class);
+                intent.putExtra("filepath", image.getAbsolutePath());
+                startActivity(intent);
             }
 
         }
-        else
-        {
-            Toast.makeText(getApplicationContext(), "Picture Not taken", Toast.LENGTH_LONG);
-        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
