@@ -14,4 +14,5 @@
     <string name="pref_header_general">アプリ設定</string>
     <string name="menu_items">メニュー一品</string>
     <string name="menu_order">注文詳細</string>
+    <string name="order_forme">注文を読み出す</string>
 </resources>

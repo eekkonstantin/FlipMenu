@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,4 +10,13 @@
         android:layout_height="match_parent"
         android:text="@string/menu_order" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/bt_speak"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:drawableStart="@drawable/ic_speak"
+        android:text="@string/order_forme" />
+
+</RelativeLayout>
