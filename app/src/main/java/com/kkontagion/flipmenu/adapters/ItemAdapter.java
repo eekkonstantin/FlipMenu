@@ -2,6 +2,9 @@ package com.kkontagion.flipmenu.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,25 +50,49 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             tvLess.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    item.inc();
-                    etQty.setText(item.getQuantity());
+                    if (item.getQuantity() > 0) {
+                        item.dec();
+                        etQty.setText(item.getQuantity() + "");
+                    }
                 }
             });
 
             tvMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    item.dec();
-                    etQty.setText(item.getQuantity());
+                    item.inc();
+                    etQty.setText(item.getQuantity() + "");
                 }
             });
 
-            etQty.setOnKeyListener(new View.OnKeyListener() {
+            etQty.addTextChangedListener(new TextWatcher() {
                 @Override
-                public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                    if (keyEvent.getAction() == KeyEvent.ACTION_UP)
-                        etQty.setText(item.getQuantity());
-                    return false;
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (editable.length() > 0
+                            && Integer.parseInt(editable.toString()) < 0) { // no data, set to zero
+                        etQty.setText("0");
+                        item.setQuantity(0);
+                    }
+                }
+            });
+
+            etQty.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if (!hasFocus && etQty.length() < 1) {
+                        etQty.setText("0");
+                        item.setQuantity(0);
+                    }
                 }
             });
         }
@@ -87,7 +114,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         Item item = items.get(position);
         holder.tvOrig.setText(item.getOriginal());
         holder.tvTrans.setText(item.getTranslated());
-        holder.etQty.setText(item.getQuantity());
+        holder.etQty.setText(item.getQuantity() + "");
         holder.item = item;
     }
 
