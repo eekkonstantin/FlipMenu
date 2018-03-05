@@ -9,6 +9,7 @@
     <dimen name="bigbt_top">20dp</dimen>
     <dimen name="bigbt_sides">55dp</dimen>
     <dimen name="bigbt_text_size">19sp</dimen>
+    <dimen name="bigbt_padding">20dp</dimen>
 
     <dimen name="action_small">20dp</dimen>
     <dimen name="item_space">10dp</dimen>

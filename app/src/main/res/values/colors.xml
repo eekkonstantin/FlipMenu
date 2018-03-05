@@ -2,9 +2,10 @@
 <resources>
     <color name="colorPrimary">#258039</color>
     <color name="colorPrimaryDark">#195626</color>
-    <color name="colorPrimaryLight">#CDCDC0</color>
+    <color name="colorPrimaryLight">#cdcdc0</color>
     <color name="colorAccent">#d61800</color>
     <color name="colorAccentLight">#DDBC95</color>
+    <color name="overlay">#DD000000</color>
     <!--<color name="colorPrimary">#626D71</color>-->
     <!--<color name="colorPrimaryDark">#4b5458</color>-->
     <!--<color name="colorPrimaryLight">#CDCDC0</color>-->

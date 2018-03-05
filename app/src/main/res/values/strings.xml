@@ -14,6 +14,10 @@
     <!-- CONFIRM ACTIVITY STRINGS -->
     <string name="image_picker_error">Something is wrong with that image. Pick a different one please.</string>
     <string name="loading_message">Loading Image</string>
+    <string name="dialog_fire_missiles">Are you sure to delete this image?</string>
+    <string name="fire">Yes</string>
+    <string name="cancel">No</string>
+    <string name="select_lang">Select language to translate to</string>
 
     <string name="title_activity_settings">Settings</string>
 
