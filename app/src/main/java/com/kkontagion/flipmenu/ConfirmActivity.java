@@ -1,9 +1,12 @@
 package com.kkontagion.flipmenu;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -48,10 +51,10 @@ import java.util.Locale;
 
 public class ConfirmActivity extends AppCompatActivity {
     //Text detection variables
-    private TextView mImageDetails;
-    private ImageView preview;
+    TextView mImageDetails;
+    ImageView preview;
     //Translation variables
-    TextView textView;
+    TextView translatedText, loadingText, statusText;
     final Handler textViewHandler = new Handler();
 
     //Cloudvision API variables
@@ -64,8 +67,10 @@ public class ConfirmActivity extends AppCompatActivity {
     ImageButton btCfm, btReject;
     Spinner spinner;
     ArrayAdapter<CharSequence> adapter;
+    Uri imageUri;
 
-    String filename;
+    String filename,status;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,20 +83,24 @@ public class ConfirmActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        textView =  findViewById(R.id.textView3);
+        translatedText =  findViewById(R.id.tv_translated);
+        loadingText =  findViewById(R.id.tv_loading);
+        loadingText.setText("Processing Image...");
+
+        statusText =  findViewById(R.id.tv_final);
 
         //Image handling
         filename = getIntent().getStringExtra("filepath");
-        Uri imageUri = Uri.fromFile(new File(filename));
+        imageUri = Uri.fromFile(new File(filename));
         preview = findViewById(R.id.img_preview);
-        mImageDetails = findViewById(R.id.textView2);
+        mImageDetails = findViewById(R.id.tv_before);
         uploadImage(imageUri);
 
         //Buttons
         btCfm = findViewById(R.id.bt_confirm);
         btReject = findViewById(R.id.bt_reject);
         btCfm.setEnabled(false);
-        btReject.setEnabled(false);
+//        btReject.setEnabled(false);
 
 //        setupActions();
     }
@@ -111,17 +120,50 @@ public class ConfirmActivity extends AppCompatActivity {
         btReject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO Bernard: delete file
-                finish();
+                confirmDialog();
             }
         });
     }
 
+    private void confirmDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Confirm");
+        builder.setMessage("Are you sure you want to delete this image?");
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                // Do nothing but close the dialog
+                File deleteImg = new File(imageUri.getPath());
+                if (deleteImg.exists()) {
+                    if (deleteImg.delete()) {
+                        System.out.println("Image Deleted :" + imageUri.getPath());
+                    } else {
+                        System.out.println("Image not Deleted :" + imageUri.getPath());
+                    }
+                }
+                onBackPressed();
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     @Override
     public void onBackPressed() {
-        // TODO Bernard (optional): "Confirm back? Data will be lost" kind of dialog
-        // TODO Bernard: delete file
-        super.onBackPressed();
+        confirmDialog();
     }
 
 
@@ -258,6 +300,33 @@ public class ConfirmActivity extends AppCompatActivity {
         return Bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, false);
     }
 
+    private void translateText(final String init_txt){
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                TranslateOptions options = TranslateOptions.newBuilder()
+                        .setApiKey(CLOUD_VISION_API_KEY)
+                        .build();
+                Translate translate = options.getService();
+                final Translation translation =
+                        translate.translate(init_txt,
+                                Translate.TranslateOption.targetLanguage("de"));
+
+                jsonTranslate = translation.getTranslatedText();
+                textViewHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (translatedText != null) {
+                            translatedText.setText(translation.getTranslatedText());
+                        }
+                        allDone();
+                    }
+                });
+                return null;
+            }
+        }.execute();
+    }
+
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
         String message = "I found these things:\n\n";
 
@@ -271,39 +340,35 @@ public class ConfirmActivity extends AppCompatActivity {
         } else {
             message += "nothing";
         }
-        final String messageFinal = message;
-        //Translate
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                TranslateOptions options = TranslateOptions.newBuilder()
-                        .setApiKey(CLOUD_VISION_API_KEY)
-                        .build();
-                Translate translate = options.getService();
-                final Translation translation =
-                        translate.translate(messageFinal,
-                                Translate.TranslateOption.targetLanguage("de"));
 
-                jsonTranslate = translation.getTranslatedText();
-                textViewHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (textView != null) {
-                            textView.setText(translation.getTranslatedText());
-                        }
-                        allDone();
-                    }
-                });
-                return null;
-            }
-        }.execute();
+        //Translate
+        translateText(message);
 
         return message;
     }
 
     public void allDone() {
-        btCfm.setEnabled(true);
-        btReject.setEnabled(true);
+        if(mImageDetails.toString() == "nothing" ){
+            loadingText.setText("Unable to detect any text. Please try again");
+            btCfm.setVisibility((View.GONE));
+            status = "Unable to detect any text. Please try another image";
+        }
+        else{
+            btCfm.setEnabled(true);
+            loadingText.setText("Done");
+            status = "Completed scanning of image";
+        }
+
+        new CountDownTimer(1500, 1000) {
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            public void onFinish() {
+                loadingText.setVisibility(View.GONE);
+                statusText.setText(status);
+            }
+        }.start();
 
         setupActions();
     }
