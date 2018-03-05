@@ -4,9 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.kkontagion.flipmenu.adapters.ItemAdapter;
+import com.kkontagion.flipmenu.objects.Item;
+
+import java.util.ArrayList;
 
 
 /**
@@ -16,7 +23,12 @@ import android.view.ViewGroup;
  * Use the {@link OrderFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OrderFragment extends Fragment {
+public class OrderFragment extends Fragment implements ItemAdapter.OnItemModListener {
+    ArrayList<Item> orders;
+
+    RecyclerView rv;
+    ItemAdapter adapter;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,6 +42,9 @@ public class OrderFragment extends Fragment {
 
     public OrderFragment() {
         // Required empty public constructor
+        orders = new ArrayList<>();
+
+        adapter = new ItemAdapter(getContext(), orders, this, true);
     }
 
     /**
@@ -63,7 +78,11 @@ public class OrderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_order, container, false);
+        View v = inflater.inflate(R.layout.fragment_order, container, false);
+        rv = v.findViewById(R.id.rv);
+
+        rv.setAdapter(adapter);
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -104,4 +123,15 @@ public class OrderFragment extends Fragment {
 //        // TODO: Update argument type and name
 //        void onFragmentInteraction(Uri uri);
 //    }
+
+
+    @Override
+    public void onItemMod(Item i) {
+        Log.d(getClass().getSimpleName(), "onItemMod: " + i);
+    }
+
+    public void collectItems(ArrayList<Item> orders) {
+        this.orders = orders;
+        adapter.notifyDataSetChanged();
+    }
 }

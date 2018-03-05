@@ -24,18 +24,20 @@ import java.util.ArrayList;
  * Use the {@link ItemsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ItemsFragment extends Fragment {
+public class ItemsFragment extends Fragment implements ItemAdapter.OnItemModListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "JSON";
 
     RecyclerView rv;
 
     private ArrayList<Item> items;
+    private ItemAdapter adapter;
 
-//    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
 
     public ItemsFragment() {
         // Required empty public constructor
+        Log.d(getClass().getSimpleName(), "ItemsFragment: constructor");
     }
 
     /**
@@ -62,6 +64,9 @@ public class ItemsFragment extends Fragment {
             jsonData = getArguments().getString(ARG_PARAM1);
 
         setupItems(jsonData);
+
+        adapter = new ItemAdapter(getContext(), items, this);
+        Log.d(getClass().getSimpleName(), "onCreate: adapter created");
     }
 
     @Override
@@ -71,8 +76,6 @@ public class ItemsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_items, container, false);
 
         rv = v.findViewById(R.id.rv_items);
-        Log.d(getClass().getSimpleName(), "onCreateView: " + items.size());
-        ItemAdapter adapter = new ItemAdapter(getContext(), items);
 
         rv.setAdapter(adapter);
 
@@ -89,18 +92,18 @@ public class ItemsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
+        mListener = null;
     }
 
     /**
@@ -113,10 +116,19 @@ public class ItemsFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
+    public interface OnFragmentInteractionListener {
+        void onItemMod(Item i);
+    }
+
+
+    @Override
+    public void onItemMod(Item i) {
+        mListener.onItemMod(i); // send to holding activity for sending to other fragment
+    }
+
+    public void collectItems(ArrayList<Item> orders) {
+
+    }
 
 
     private void setupItems(String jsonData) {
@@ -125,6 +137,6 @@ public class ItemsFragment extends Fragment {
         char orig = 'a';
         char trans = 'z';
         for (int i=0; i<20; i++)
-            items.add(new Item(i, "" + orig++, "" + trans++));
+            items.add(new Item(i, "" + orig++, "" + trans--));
     }
 }

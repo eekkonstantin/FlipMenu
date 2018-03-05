@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -29,13 +30,15 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="Item Photo"
                 android:elevation="10dp"
+                android:padding="5dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/fancaidan" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/bt_action"
                 android:layout_marginLeft="@dimen/item_space"
                 android:layout_toEndOf="@+id/img">
 
@@ -45,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="Item 1"
-                    android:textAppearance="@android:style/TextAppearance.Material.Large" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
                 <TextView
                     android:id="@+id/tv2"
@@ -56,49 +59,61 @@
                     android:layout_marginBottom="5dp"
                     android:text="Original Text" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv2"
-                    android:layout_centerHorizontal="true"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_less"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="-" />
-
-                    <EditText
-                        android:id="@+id/et_qty"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:gravity="center"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:text="0" />
-
-                    <TextView
-                        android:id="@+id/tv_more"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="+" />
-                </LinearLayout>
             </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/img_action"
+            <LinearLayout
+                android:id="@+id/qty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="@dimen/item_space"
+                android:layout_toEndOf="@+id/img"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_less"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="-"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:textColor="@color/colorAccent" />
+
+                <EditText
+                    android:id="@+id/et_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:text="0" />
+
+                <TextView
+                    android:id="@+id/tv_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="+"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:textColor="@color/colorAccent" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/bt_action"
                 android:layout_width="@dimen/action_small"
                 android:layout_height="@dimen/action_small"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:scaleType="fitXY"
                 app:srcCompat="@drawable/ic_see" />
         </RelativeLayout>
 

@@ -51,4 +51,9 @@ public class Item implements Serializable {
     public void dec() {
         this.quantity--;
     }
+
+    @Override
+    public String toString() {
+        return "ID " + id + ": " + translated + "(" + original + ") - " + quantity;
+    }
 }

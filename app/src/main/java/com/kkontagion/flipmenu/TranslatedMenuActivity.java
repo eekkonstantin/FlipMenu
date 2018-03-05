@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -19,9 +20,10 @@ import com.kkontagion.flipmenu.objects.Item;
 
 import java.util.ArrayList;
 
-public class TranslatedMenuActivity extends AppCompatActivity {
+public class TranslatedMenuActivity extends AppCompatActivity implements ItemsFragment.OnFragmentInteractionListener {
 
     String jsonData;
+    ArrayList<Item> orders = new ArrayList<>();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -34,9 +36,11 @@ public class TranslatedMenuActivity extends AppCompatActivity {
                 case R.id.navigation_items:
                     frag = ItemsFragment.newInstance(jsonData);
                     tag = "menu";
+                    ((ItemsFragment) frag).collectItems(orders);
                     break;
                 case R.id.navigation_cart:
                     frag = OrderFragment.newInstance("a", "b");
+                    ((OrderFragment) frag).collectItems(orders);
                     tag = "order";
                     break;
             }
@@ -83,5 +87,31 @@ public class TranslatedMenuActivity extends AppCompatActivity {
 
     private void detectItems() {
 
+    }
+
+    /**
+     * Receive Item from Item fragment
+     * @param i modified item
+     */
+    @Override
+    public void onItemMod(Item i) {
+        Log.d(getLocalClassName(), "onItemMod: " + i);
+        orders.add(i);
+        OrderFragment orderFragment = (OrderFragment) getFragmentManager().findFragmentByTag("order");
+        if (orderFragment != null)
+            orderFragment.collectItems(orders);
+//        else {
+
+//            orderFragment = new OrderFragment();
+//            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//
+//            // Replace whatever is in the fragment_container view with this fragment,
+//            // and add the transaction to the back stack so the user can navigate back
+//            transaction.replace(R.id.content, orderFragment, "order");
+//            transaction.addToBackStack(null);
+//            transaction.commit();
+//
+//            orderFragment.collectItem(i);
+//        }
     }
 }

@@ -13,8 +13,16 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/navigation"
         android:layout_alignParentStart="true">
-
-
+        <!--<fragment-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:id="@+id/frag_menu"-->
+            <!--android:name="com.kkontagion.flipmenu.ItemsFragment" />-->
+        <!--<fragment-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:id="@+id/frag_order"-->
+            <!--android:name="com.kkontagion.flipmenu.OrderFragment" />-->
     </FrameLayout>
 
     <android.support.design.widget.BottomNavigationView
