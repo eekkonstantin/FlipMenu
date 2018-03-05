@@ -10,10 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+//bernard
+import android.speech.tts.TextToSpeech;
+import android.widget.Button;
+import android.widget.Toast;
+
 import com.kkontagion.flipmenu.adapters.ItemAdapter;
 import com.kkontagion.flipmenu.objects.Item;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 /**
@@ -24,6 +30,9 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class OrderFragment extends Fragment implements ItemAdapter.OnItemModListener {
+    TextToSpeech t1;
+    Button btnSpeak;
+
     ArrayList<Item> orders;
 
     RecyclerView rv;
@@ -82,7 +91,40 @@ public class OrderFragment extends Fragment implements ItemAdapter.OnItemModList
         rv = v.findViewById(R.id.rv);
 
         rv.setAdapter(adapter);
+
+        btnSpeak = v.findViewById(R.id.bt_speak);
+
+        //bernard tts
+        t1=new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    t1.setLanguage(Locale.CHINESE);
+                }
+            }
+        });
+
+        btnSpeak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CharSequence toSpeak = "hello how are you";
+                Toast.makeText(getActivity(), toSpeak,Toast.LENGTH_SHORT).show();
+                t1.speak(toSpeak,TextToSpeech.QUEUE_FLUSH,null,null);
+            }
+        });
+
         return v;
+    }
+
+    @Override
+    public void onDestroy() {
+        if(t1 != null) {
+
+            t1.stop();
+            t1.shutdown();
+            Log.d("Order Fragment", "TTS Destroyed");
+        }
+        super.onDestroy();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -70,6 +70,8 @@ public class ConfirmActivity extends AppCompatActivity {
     Uri imageUri;
     Boolean isEmpty = false;
     String filename,status,message;
+    AlertDialog.Builder builder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +127,7 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
     private void confirmDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(ConfirmActivity.this);
+        builder = new AlertDialog.Builder(ConfirmActivity.this);
 
         builder.setTitle("Confirm");
         builder.setMessage("Are you sure you want to delete this image?");
@@ -142,7 +144,6 @@ public class ConfirmActivity extends AppCompatActivity {
                         System.out.println("Image not Deleted :" + imageUri.getPath());
                     }
                 }
-                onBackPressed();
                 dialog.dismiss();
                 finish();
             }
@@ -346,6 +347,7 @@ public class ConfirmActivity extends AppCompatActivity {
 
         return message;
     }
+
 
     public void allDone() {
         if(isEmpty){
