@@ -17,6 +17,7 @@
     <string name="dialog_fire_missiles">Are you sure to delete this image?</string>
     <string name="fire">Yes</string>
     <string name="cancel">No</string>
+    <string name="select_lang">Select language to translate to</string>
 
     <string name="title_activity_settings">Settings</string>
 

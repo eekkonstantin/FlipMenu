@@ -68,9 +68,8 @@ public class ConfirmActivity extends AppCompatActivity {
     Spinner spinner;
     ArrayAdapter<CharSequence> adapter;
     Uri imageUri;
-
-    String filename,status;
-
+    Boolean isEmpty = false;
+    String filename,status,message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +125,7 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
     private void confirmDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ConfirmActivity.this);
 
         builder.setTitle("Confirm");
         builder.setMessage("Are you sure you want to delete this image?");
@@ -328,7 +327,7 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
-        String message = "I found these things:\n\n";
+
 
         List<EntityAnnotation> labels = response.getResponses().get(0).getTextAnnotations();
         if (labels != null) {
@@ -338,6 +337,7 @@ public class ConfirmActivity extends AppCompatActivity {
                 // TODO json, locationXY
             }
         } else {
+            isEmpty = true;
             message += "nothing";
         }
 
@@ -348,20 +348,20 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
     public void allDone() {
-        if(mImageDetails.toString() == "nothing" ){
-            loadingText.setText("Unable to detect any text. Please try again");
+        if(isEmpty){
+            loadingText.setText("Error");
             btCfm.setVisibility((View.GONE));
-            status = "Unable to detect any text. Please try another image";
+            status = "No text detected, please try again";
         }
         else{
             btCfm.setEnabled(true);
             loadingText.setText("Done");
-            status = "Completed scanning of image";
+            status = "";
         }
 
         new CountDownTimer(1500, 1000) {
             public void onTick(long millisUntilFinished) {
-
+                //do nothing
             }
 
             public void onFinish() {

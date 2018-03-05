@@ -7,12 +7,22 @@
     tools:context="com.kkontagion.flipmenu.ConfirmActivity">
 
 
+    <TextView
+        android:id="@+id/tv_selectlang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/select_lang" />
+
     <Spinner
         android:id="@+id/sp_lang"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/tv_selectlang"
         android:visibility="visible" />
 
     <ImageView
@@ -31,7 +41,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/linearLayout"
         android:layout_centerHorizontal="true"
-        android:text="TextView" />
+        android:autoText="false"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
     <TextView
         android:id="@+id/tv_translated"
@@ -51,20 +65,20 @@
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:id="@+id/linearLayout">
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/bt_reject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/colorPrimaryLight"
+            android:background="@android:color/transparent"
             android:contentDescription="@android:string/no"
-            android:tint="@android:color/black"
+            android:paddingBottom="15dp"
             app:srcCompat="@drawable/ic_redo" />
 
         <ImageButton
@@ -72,9 +86,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/colorPrimaryLight"
+            android:background="@android:color/transparent"
             android:contentDescription="@android:string/yes"
-            android:tint="@android:color/black"
             android:visibility="visible"
             app:srcCompat="@drawable/ic_tick" />
     </LinearLayout>
@@ -91,11 +104,11 @@
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="10"
-        android:text="TextView"
         android:textAppearance="@android:style/TextAppearance.Material.Large"
         android:textColor="@android:color/white"
         android:textColorHighlight="@android:color/white"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="visible" />
 
 
 </RelativeLayout>
