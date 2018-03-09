@@ -110,7 +110,7 @@ public class ConfirmActivity extends AppCompatActivity {
         btCfm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getBaseContext(), TranslatedMenuActivity.class);
+                Intent i = new Intent(getBaseContext(), MenuActivity.class);
 
                 i.putExtra("detectedJSON", jsonTextDetect);
                 i.putExtra("translatedJSON", jsonTranslate);

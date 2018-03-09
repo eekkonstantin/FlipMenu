@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_history:
                 // TODO Kon: change to history page
-                startActivity(new Intent(this, TranslatedMenuActivity.class));
+                startActivity(new Intent(this, MenuActivity.class));
                 break;
         }
 

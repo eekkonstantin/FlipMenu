@@ -30,7 +30,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     ArrayList<Item> items;
     boolean enableClear = false;
 
-    OnItemModListener itemModListener;
+    boolean hasPadding = false;
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView tvMore, tvLess;
@@ -58,7 +58,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     if (item.getQuantity() > 0) {
                         item.dec();
                         etQty.setText(item.getQuantity() + "");
-                        modItem(item);
                     }
                 }
             });
@@ -68,7 +67,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 public void onClick(View view) {
                     item.inc();
                     etQty.setText(item.getQuantity() + "");
-                    modItem(item);
                 }
             });
 
@@ -106,27 +104,40 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     }
                 }
             });
+
+            btAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (enableClear) { // Remove item.
+                        items.remove(items.indexOf(item));
+                        notifyDataSetChanged();
+                    } else { // TODO: Show in original image.
+
+                    }
+                }
+            });
         }
     }
 
-    public ItemAdapter(Context ctx, ArrayList<Item> items, OnItemModListener itemModListener) {
+    public ItemAdapter(Context ctx, ArrayList<Item> items) {
         this.ctx = ctx;
         this.items = items;
-        this.itemModListener = itemModListener;
     }
-    public ItemAdapter(Context ctx, ArrayList<Item> items, OnItemModListener itemModListener, boolean enableClear) {
+    public ItemAdapter(Context ctx, ArrayList<Item> items, boolean hasPadding) {
         this.ctx = ctx;
         this.items = items;
-        this.itemModListener = itemModListener;
+        this.hasPadding = hasPadding;
+    }
+    public ItemAdapter(boolean enableClear, Context ctx, ArrayList<Item> items) {
+        this.ctx = ctx;
+        this.items = items;
         this.enableClear = enableClear;
     }
-
-    public void modItem(Item item) {
-        itemModListener.onItemMod(item);
-    }
-
-    public interface OnItemModListener {
-        void onItemMod(Item i);
+    public ItemAdapter(boolean enableClear, Context ctx, ArrayList<Item> items, boolean hasPadding) {
+        this.ctx = ctx;
+        this.items = items;
+        this.hasPadding = hasPadding;
+        this.enableClear = enableClear;
     }
 
     @Override

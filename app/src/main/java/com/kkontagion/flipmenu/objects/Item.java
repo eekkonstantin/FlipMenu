@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by Kon on 4/3/2018.
  */
 
-public class Item implements Serializable {
+public class Item implements Parcelable {
     String original, translated;
     int id, quantity;
 
@@ -18,6 +18,41 @@ public class Item implements Serializable {
         this.original = original;
         this.translated = translated;
         this.quantity = 0;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeInt(quantity);
+        parcel.writeString(original);
+        parcel.writeString(translated);
+    }
+
+    public static final Parcelable.Creator<Item> CREATOR
+            = new Parcelable.Creator<Item>() {
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
+
+    private Item(Parcel in) {
+        this.id = in.readInt();
+        this.quantity = in.readInt();
+        this.original = in.readString();
+        this.translated = in.readString();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getOriginal() {
@@ -52,8 +87,17 @@ public class Item implements Serializable {
         this.quantity--;
     }
 
+    public String toSpeech() {
+        return quantity + " " + translated;
+    }
+
     @Override
     public String toString() {
         return "ID " + id + ": " + translated + "(" + original + ") - " + quantity;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (this.id == ((Item) obj).getId()) || super.equals(obj);
     }
 }
