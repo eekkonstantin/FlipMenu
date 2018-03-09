@@ -104,6 +104,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                     }
                 }
             });
+
+            btAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (enableClear) { // Remove item.
+                        items.remove(items.indexOf(item));
+                        notifyDataSetChanged();
+                    } else { // TODO: Show in original image.
+
+                    }
+                }
+            });
         }
     }
 

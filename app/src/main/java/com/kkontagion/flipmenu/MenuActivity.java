@@ -46,6 +46,7 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View view) {
                 for (Item i : items)
                     i.setQuantity(0);
+                adapter.notifyDataSetChanged();
             }
         });
 
@@ -97,10 +98,14 @@ public class MenuActivity extends AppCompatActivity {
 
         char orig = 'a';
         char trans = 'z';
-        for (int i=0; i<20; i++)
+        for (int i=0; i<26; i++)
             items.add(new Item(i, "" + orig++, "" + trans--));
     }
 
+    /**
+     * Collates menu items with quantity > 0, to be sent to next page.
+     * @return
+     */
     private ArrayList<Item> collateOrders() {
         ArrayList<Item> ret = new ArrayList<>();
 
@@ -115,14 +120,19 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 200 && resultCode == RESULT_CANCELED) {
-            ArrayList<Item> orders = data.getParcelableArrayListExtra("orders");
-            for (Item i : items) {
-                if (orders.contains(i)) { // update qty
-                    int odx = orders.indexOf(i);
-                    i.setQuantity(orders.get(odx).getQuantity());
-                }
-            }
+        if (requestCode == 200 && resultCode == RESULT_CANCELED)
+            checkQty(data);
+    }
+
+    private void checkQty(Intent data) {
+        ArrayList<Item> orders = data.getParcelableArrayListExtra("orders");
+        for (Item i : items) {
+            if (orders.contains(i)) { // update qty
+                int odx = orders.indexOf(i);
+                i.setQuantity(orders.get(odx).getQuantity());
+            } else
+                i.setQuantity(0);
         }
+        adapter.notifyDataSetChanged();
     }
 }

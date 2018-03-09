@@ -48,8 +48,7 @@
         <activity
             android:name=".OrderActivity"
             android:label="@string/title_activity_order"
-            android:parentActivityName=".MenuActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName=".MenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kkontagion.flipmenu.MenuActivity" />
