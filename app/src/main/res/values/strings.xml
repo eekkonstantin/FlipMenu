@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FanCaiDan</string>
+    <string name="app_name">fancaidan</string>
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -48,4 +48,7 @@
     <string name="menu_order">View Order</string>
     <string name="order_forme">Say my order</string>
     <string name="order_clear">Clear All</string>
+
+    <string name="title_activity_menu">Translated Menu</string>
+    <string name="title_activity_order">My Order</string>
 </resources>
