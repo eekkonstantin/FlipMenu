@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 
 import com.kkontagion.flipmenu.adapters.ItemAdapter;
 import com.kkontagion.flipmenu.objects.Item;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -36,7 +39,7 @@ public class MenuActivity extends AppCompatActivity {
         if ( savedInstanceState != null && savedInstanceState.containsKey("items"))
             this.items = savedInstanceState.getParcelableArrayList("items");
         else
-            setupItems("");
+            setupItems();
 
         adapter = new ItemAdapter(getBaseContext(), items);
         rv.setAdapter(adapter);
@@ -93,8 +96,24 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    private void setupItems(String jsonData) {
+    private void setupItems() {
         items = new ArrayList<>();
+
+        JSONObject jsonOrig, jsonTrans;
+        try {
+            jsonOrig = new JSONObject(getIntent().getStringExtra("detectedJSON"));
+        } catch (Exception e) {
+            jsonOrig = new JSONObject();
+            Log.e(getClass().getSimpleName(), "setupItems: Error in detected JSON");
+        }
+        try {
+            jsonTrans = new JSONObject(getIntent().getStringExtra("translatedJSON"));
+        } catch (Exception e) {
+            jsonTrans = new JSONObject();
+            Log.e(getClass().getSimpleName(), "setupItems: Error in translated JSON");
+        }
+        Log.d(getClass().getSimpleName(), "setupItems ORIG: " + jsonOrig.toString());
+//        Log.d(getClass().getSimpleName(), "setupItems TRANS: " + jsonTrans.toString());
 
         char orig = 'a';
         char trans = 'z';

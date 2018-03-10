@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +72,7 @@ public class ConfirmActivity extends AppCompatActivity {
     Boolean isEmpty = false;
     String filename,status,message;
     AlertDialog.Builder builder;
+    RelativeLayout rlLoading;
 
 
     @Override
@@ -85,6 +87,7 @@ public class ConfirmActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         translatedText =  findViewById(R.id.tv_translated);
+        rlLoading = findViewById(R.id.rl_loading);
         loadingText =  findViewById(R.id.tv_loading);
         loadingText.setText("Processing Image...");
 
@@ -367,7 +370,7 @@ public class ConfirmActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
-                loadingText.setVisibility(View.GONE);
+                rlLoading.setVisibility(View.GONE);
                 statusText.setText(status);
             }
         }.start();
