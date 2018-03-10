@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -47,15 +48,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 public class ConfirmActivity extends AppCompatActivity {
     //Text detection variables
-    TextView mImageDetails;
-    ImageView preview;
+    TextView tvImageDetails;
+    ImageView imgPreview;
     //Translation variables
-    TextView translatedText, loadingText, statusText;
+    TextView tvTranslated, tvLoading, statusText;
     final Handler textViewHandler = new Handler();
 
     //Cloudvision API variables
@@ -63,14 +65,15 @@ public class ConfirmActivity extends AppCompatActivity {
     private static final String ANDROID_CERT_HEADER = "X-Android-Cert";
     private static final String ANDROID_PACKAGE_HEADER = "X-Android-Package";
 
-    private String jsonTextDetect, jsonTranslate;
+    private String jsonTextDetect;
+    private ArrayList<String> textTranslated, transHolder;
 
     ImageButton btCfm, btReject;
     Spinner spinner;
     ArrayAdapter<CharSequence> adapter;
     Uri imageUri;
     Boolean isEmpty = false;
-    String filename,status,message;
+    String chosenLang, filename,status,message = "";
     AlertDialog.Builder builder;
     RelativeLayout rlLoading;
 
@@ -79,25 +82,26 @@ public class ConfirmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
+
         //Spinner
         spinner = findViewById(R.id.sp_lang);
-        adapter = ArrayAdapter.createFromResource(this,
-                R.array.list_preference_language, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+//        adapter = ArrayAdapter.createFromResource(this,
+//                R.array.list_preference_language, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinner.setAdapter(adapter);
 
-        translatedText =  findViewById(R.id.tv_translated);
+        tvTranslated =  findViewById(R.id.tv_translated);
         rlLoading = findViewById(R.id.rl_loading);
-        loadingText =  findViewById(R.id.tv_loading);
-        loadingText.setText("Processing Image...");
+        tvLoading =  findViewById(R.id.tv_loading);
+        tvLoading.setText(R.string.progress_detect);
 
         statusText =  findViewById(R.id.tv_final);
 
         //Image handling
         filename = getIntent().getStringExtra("filepath");
         imageUri = Uri.fromFile(new File(filename));
-        preview = findViewById(R.id.img_preview);
-        mImageDetails = findViewById(R.id.tv_before);
+        imgPreview = findViewById(R.id.img_preview);
+        tvImageDetails = findViewById(R.id.tv_before);
         uploadImage(imageUri);
 
         //Buttons
@@ -113,11 +117,15 @@ public class ConfirmActivity extends AppCompatActivity {
         btCfm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getBaseContext(), MenuActivity.class);
+                // Show progressbar
+                tvLoading.setText(R.string.progress_translate);
+                rlLoading.setVisibility(View.VISIBLE);
 
-                i.putExtra("detectedJSON", jsonTextDetect);
-                i.putExtra("translatedJSON", jsonTranslate);
-                startActivity(i);
+                // Select Language
+                chosenLang = getResources().getStringArray(R.array.list_preference_language_values)[spinner.getSelectedItemPosition()];
+                Log.d(getClass().getSimpleName(), "onClick: " + chosenLang);
+
+                translateText(transHolder);
             }
         });
 
@@ -169,6 +177,17 @@ public class ConfirmActivity extends AppCompatActivity {
         confirmDialog();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                confirmDialog();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void uploadImage(Uri uri) {
         if (uri != null) {
@@ -180,7 +199,7 @@ public class ConfirmActivity extends AppCompatActivity {
                                 1200);
 
                 callCloudVision(bitmap);
-                preview.setImageBitmap(bitmap);
+                imgPreview.setImageBitmap(bitmap);
 
             } catch (IOException e) {
                 Log.d("ConfirmActivity", "Image picking failed because " + e.getMessage());
@@ -194,7 +213,7 @@ public class ConfirmActivity extends AppCompatActivity {
 
     private void callCloudVision(final Bitmap bitmap) throws IOException {
         // Switch text to loading
-        mImageDetails.setText(R.string.loading_message);
+        tvImageDetails.setText(R.string.loading_message);
 
         // Do the real work in an async task, because we need to use the network anyway
         new AsyncTask<Object, Void, String>() {
@@ -267,6 +286,12 @@ public class ConfirmActivity extends AppCompatActivity {
                     BatchAnnotateImagesResponse response = annotateRequest.execute();
                     jsonTextDetect = response.toString();
                     convertResponseToString(response);
+                    textViewHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            detectDone();
+                        }
+                    });
                     return response.toString();
 
                 } catch (GoogleJsonResponseException e) {
@@ -279,7 +304,7 @@ public class ConfirmActivity extends AppCompatActivity {
             }
 
             protected void onPostExecute(String result) {
-                mImageDetails.setText(result);
+                tvImageDetails.setText(result);
             }
         }.execute();
     }
@@ -303,7 +328,7 @@ public class ConfirmActivity extends AppCompatActivity {
         return Bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, false);
     }
 
-    private void translateText(final String init_txt){
+    private void translateText(final List<String> init_txt){
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -311,17 +336,17 @@ public class ConfirmActivity extends AppCompatActivity {
                         .setApiKey(CLOUD_VISION_API_KEY)
                         .build();
                 Translate translate = options.getService();
-                final Translation translation =
+                final List<Translation> translation =
                         translate.translate(init_txt,
-                                Translate.TranslateOption.targetLanguage("de"));
+                                Translate.TranslateOption.targetLanguage(chosenLang));
 
-                jsonTranslate = translation.getTranslatedText();
+                formatTranslationResult(translation);
                 textViewHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (translatedText != null) {
-                            translatedText.setText(translation.getTranslatedText());
-                        }
+//                        if (tvTranslated != null) {
+//                            tvTranslated.setText(translation.getTranslatedText());
+//                        }
                         allDone();
                     }
                 });
@@ -330,37 +355,70 @@ public class ConfirmActivity extends AppCompatActivity {
         }.execute();
     }
 
+    private void formatTranslationResult(List<Translation> translations) {
+        textTranslated = new ArrayList<>();
+        for (Translation t : translations)
+            textTranslated.add(t.getTranslatedText());
+    }
+
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
 
 
         List<EntityAnnotation> labels = response.getResponses().get(0).getTextAnnotations();
         if (labels != null) {
-            for (EntityAnnotation label : labels) {
-                message += String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription());
-                message += "\n";
-                // TODO json, locationXY
-            }
+            // Get main text
+            message += String.format(Locale.US, "%s", labels.get(0).getDescription());
+//            for (EntityAnnotation label : labels) {
+//                message += String.format(Locale.US, "%s", label.getDescription());
+//                message += "\n";
+//                // TODO json, locationXY
+//            }
+            formatDetectedText();
         } else {
             isEmpty = true;
-            message += "nothing";
+            message = getString(R.string.error_nodetect);
         }
 
-        //Translate
-        translateText(message);
+        Log.e(getClass().getSimpleName(), "convertResponseToString: " + message);
 
         return message;
     }
 
+    // Kon
 
-    public void allDone() {
+    /**
+     * Format:
+     *  HEADER
+     *  Item Name
+     *  Item description
+     */
+    private void formatDetectedText() {
+        String[] sp = message.split("\n");
+        transHolder = new ArrayList<>();
+
+        StringBuilder sb = new StringBuilder(sp[0]);
+        sb.append(" === ");
+        transHolder.add(sp[0]);
+
+        for (int i=1; i<sp.length - 1; i+= 2) {
+            sb.append(sp[i] + " /// ");
+            sb.append(sp[i+1] + " //// ");
+            transHolder.add(sp[i] + " /// " + sp[i+1]);
+        }
+
+        message = sb.toString();
+    }
+
+
+    public void detectDone() {
         if(isEmpty){
-            loadingText.setText("Error");
+            tvLoading.setText("Error");
             btCfm.setVisibility((View.GONE));
             status = "No text detected, please try again";
         }
         else{
             btCfm.setEnabled(true);
-            loadingText.setText("Done");
+            tvLoading.setText(R.string.progress_done);
             status = "";
         }
 
@@ -376,6 +434,21 @@ public class ConfirmActivity extends AppCompatActivity {
         }.start();
 
         setupActions();
+    }
+
+    private void allDone() {
+
+        Log.e(getClass().getSimpleName(), "allDone: " + textTranslated);
+        // Close progressbar
+        rlLoading.setVisibility(View.GONE);
+
+        // Set intent data and open activity.
+        Intent i = new Intent(getBaseContext(), MenuActivity.class);
+
+        i.putExtra("detectedJSON", jsonTextDetect);
+        i.putExtra("detectedText", transHolder);
+        i.putExtra("translatedText", textTranslated);
+        startActivity(i);
     }
 
 }

@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
+        android:padding="8dp"
         android:text="@string/select_lang" />
 
     <Spinner
@@ -23,7 +22,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/tv_selectlang"
-        android:visibility="visible" />
+        android:visibility="visible"
+        android:entries="@array/list_preference_language" />
 
     <ImageView
         android:id="@+id/img_preview"

@@ -43,7 +43,7 @@
     </string-array>
 
 
-    <string name="title_activity_translated_menu">Menu</string>
+    <string name="title_activity_confirm">Confirmation</string>
     <string name="menu_items">Menu Items</string>
     <string name="menu_order">View Order</string>
     <string name="order_forme">Say my order</string>
@@ -52,4 +52,9 @@
 
     <string name="title_activity_menu">Translated Menu</string>
     <string name="title_activity_order">My Order</string>
+
+    <string name="error_nodetect">No text detected.</string>
+    <string name="progress_detect">Processing Image&#8230;</string>
+    <string name="progress_translate">Translating&#8230;</string>
+    <string name="progress_done">Done!</string>
 </resources>

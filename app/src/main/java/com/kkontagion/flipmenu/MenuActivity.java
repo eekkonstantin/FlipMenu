@@ -99,26 +99,32 @@ public class MenuActivity extends AppCompatActivity {
     private void setupItems() {
         items = new ArrayList<>();
 
-        JSONObject jsonOrig, jsonTrans;
+        JSONObject jsonOrig;
+        ArrayList<String> textTrans, textOrig;
         try {
             jsonOrig = new JSONObject(getIntent().getStringExtra("detectedJSON"));
         } catch (Exception e) {
             jsonOrig = new JSONObject();
             Log.e(getClass().getSimpleName(), "setupItems: Error in detected JSON");
         }
-        try {
-            jsonTrans = new JSONObject(getIntent().getStringExtra("translatedJSON"));
-        } catch (Exception e) {
-            jsonTrans = new JSONObject();
-            Log.e(getClass().getSimpleName(), "setupItems: Error in translated JSON");
-        }
+        textTrans = getIntent().getStringArrayListExtra("translatedText");
+        textOrig = getIntent().getStringArrayListExtra("detectedText");
         Log.d(getClass().getSimpleName(), "setupItems ORIG: " + jsonOrig.toString());
-//        Log.d(getClass().getSimpleName(), "setupItems TRANS: " + jsonTrans.toString());
 
-        char orig = 'a';
-        char trans = 'z';
-        for (int i=0; i<26; i++)
-            items.add(new Item(i, "" + orig++, "" + trans--));
+        if (textTrans.size() < 2) {
+            char orig = 'a';
+            char trans = 'z';
+            for (int i = 0; i < 26; i++)
+                items.add(new Item(i, "" + orig++, "" + trans--));
+        } else {
+            for (int i = 1; i<textTrans.size(); i++) {
+                String[] det = textTrans.get(i).split("///");
+                Item me = new Item(i, textTrans.get(i), textOrig.get(i), det[0]);
+                if (det.length > 1)
+                    me.setDescription(det[1]);
+                items.add(me);
+            }
+        }
     }
 
     /**

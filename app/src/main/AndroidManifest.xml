@@ -28,7 +28,10 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".ConfirmActivity" />
+        <activity
+            android:name=".ConfirmActivity"
+            android:label="@string/title_activity_menu"
+            android:parentActivityName=".MainActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

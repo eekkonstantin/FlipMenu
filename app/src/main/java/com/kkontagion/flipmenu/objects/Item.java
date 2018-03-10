@@ -2,6 +2,7 @@ package com.kkontagion.flipmenu.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
 
 public class Item implements Parcelable {
     String original, translated;
+    String name, description;
     int id, quantity;
 
     public Item(int id, String translated, String original) {
@@ -18,7 +20,27 @@ public class Item implements Parcelable {
         this.original = original;
         this.translated = translated;
         this.quantity = 0;
+        this.name = translated;
+        this.description = original;
     }
+    public Item(int id, String translated, String original, String name) {
+        this.id = id;
+        this.original = original;
+        this.translated = translated;
+        this.quantity = 0;
+        this.name = name;
+        this.description = original;
+    }
+    public Item(int id, String translated, String original, String name, String description) {
+        this.id = id;
+        this.original = original;
+        this.translated = translated;
+        this.quantity = 0;
+        this.name = name;
+        this.description = description;
+    }
+
+
 
     @Override
     public int describeContents() {
@@ -31,6 +53,8 @@ public class Item implements Parcelable {
         parcel.writeInt(quantity);
         parcel.writeString(original);
         parcel.writeString(translated);
+        parcel.writeString(name);
+        parcel.writeString(description);
     }
 
     public static final Parcelable.Creator<Item> CREATOR
@@ -49,6 +73,8 @@ public class Item implements Parcelable {
         this.quantity = in.readInt();
         this.original = in.readString();
         this.translated = in.readString();
+        this.name = in.readString();
+        this.description = in.readString();
     }
 
     public int getId() {
@@ -71,6 +97,22 @@ public class Item implements Parcelable {
         this.translated = translated;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public int getQuantity() {
         return quantity;
     }
@@ -88,7 +130,8 @@ public class Item implements Parcelable {
     }
 
     public String toSpeech() {
-        return quantity + " " + translated;
+        String[] sep = original.split("///");
+        return quantity + " " + sep[0];
     }
 
     @Override
