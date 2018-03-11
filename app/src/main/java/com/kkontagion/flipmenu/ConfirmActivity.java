@@ -44,6 +44,7 @@ import com.google.api.services.vision.v1.model.Image;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
+import com.kkontagion.flipmenu.objects.HistoryItem;
 
 
 import org.json.JSONObject;
@@ -102,6 +103,11 @@ public class ConfirmActivity extends AppCompatActivity {
         tvLoading =  findViewById(R.id.tv_loading);
         tvLoading.setText(R.string.progress_detect);
 
+        //Buttons
+        btCfm = findViewById(R.id.bt_confirm);
+        btReject = findViewById(R.id.bt_reject);
+        btCfm.setEnabled(false);
+
         statusText =  findViewById(R.id.tv_final);
 
         imgPreview = findViewById(R.id.img_preview);
@@ -114,30 +120,15 @@ public class ConfirmActivity extends AppCompatActivity {
         fromHistory = getIntent().getBooleanExtra("fromHistory", false);
         if (fromHistory) {
             Glide.with(this).load(new File(filename)).into(imgPreview);
-            try {
-                JSONObject json = new JSONObject(
-                        getSharedPreferences(
-                                imageUri.getLastPathSegment().split("\\.")[0], MODE_PRIVATE
-                        ).getString("jsondata", "")
-                );
-                this.message = ((JSONObject) ((JSONObject) json.getJSONArray("responses").get(0))
-                                        .getJSONArray("textAnnotations").get(0)
-                                ).getString("description");
-                formatDetectedText();
-                detectDone();
-            } catch (Exception e) {
-                Log.e(getClass().getSimpleName(), "onCreate: fuck");
-            }
+            HistoryItem hItem = getIntent().getParcelableExtra("historyItem");
+            this.message = hItem.getFullText();
+            formatDetectedText();
+            detectDone();
         } else {
             //Image handling
             Log.d(getClass().getSimpleName(), "onCreate: " + imageUri.getLastPathSegment());
             uploadImage(imageUri);
         }
-
-        //Buttons
-        btCfm = findViewById(R.id.bt_confirm);
-        btReject = findViewById(R.id.bt_reject);
-        btCfm.setEnabled(false);
 //        btReject.setEnabled(false);
 
 //        setupActions();
@@ -204,7 +195,8 @@ public class ConfirmActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        confirmDialog();
+        if (!fromHistory) confirmDialog();
+        else super.onBackPressed();
     }
 
     @Override
@@ -212,7 +204,7 @@ public class ConfirmActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                confirmDialog();
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
