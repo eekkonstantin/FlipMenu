@@ -209,7 +209,6 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.nav_translate:
-                // TODO Bernard: open camera/permissions here
                 Log.d("penis", "onNavigationItemSelected: ");
                 if(CheckingPermissionIsEnabledOrNot())
                 {
@@ -221,7 +220,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_history:
                 // TODO Kon: change to history page
-                startActivity(new Intent(this, MenuActivity.class));
+                startActivity(new Intent(this, HistoryActivity.class));
                 break;
         }
 
