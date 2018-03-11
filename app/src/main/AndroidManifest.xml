@@ -41,7 +41,8 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
-        </provider><![CDATA[
+        </provider>
+        <![CDATA[
         android:label="@string/title_activity_settings" />
         ]]>
         <activity
@@ -56,6 +57,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kkontagion.flipmenu.MenuActivity" />
         </activity>
+        <activity android:name=".HistoryActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

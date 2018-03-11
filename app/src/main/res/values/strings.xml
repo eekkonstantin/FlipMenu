@@ -57,4 +57,7 @@
     <string name="progress_detect">Processing Image&#8230;</string>
     <string name="progress_translate">Translating&#8230;</string>
     <string name="progress_done">Done!</string>
+
+    <string name="title_activity_history">Menu History</string>
+    <string name="history_location">Unknown Location</string>
 </resources>

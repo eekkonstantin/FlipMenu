@@ -3,6 +3,7 @@ package com.kkontagion.flipmenu;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -49,6 +50,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -100,6 +102,7 @@ public class ConfirmActivity extends AppCompatActivity {
         //Image handling
         filename = getIntent().getStringExtra("filepath");
         imageUri = Uri.fromFile(new File(filename));
+        Log.d(getClass().getSimpleName(), "onCreate: " + imageUri.getLastPathSegment());
         imgPreview = findViewById(R.id.img_preview);
         tvImageDetails = findViewById(R.id.tv_before);
         uploadImage(imageUri);
@@ -430,6 +433,14 @@ public class ConfirmActivity extends AppCompatActivity {
             public void onFinish() {
                 rlLoading.setVisibility(View.GONE);
                 statusText.setText(status);
+
+                // save data
+                String fname = imageUri.getLastPathSegment().split("\\.")[0];
+                SharedPreferences.Editor spE = getSharedPreferences(fname, MODE_PRIVATE).edit();
+                spE.putString("jsondata", jsonTextDetect)
+                        .putString("location", null) // TODO get location
+                        .putLong("datetime", Calendar.getInstance().getTimeInMillis())
+                        .apply();
             }
         }.start();
 
