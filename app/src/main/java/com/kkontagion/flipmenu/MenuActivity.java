@@ -14,11 +14,13 @@ import android.widget.TextView;
 import com.kkontagion.flipmenu.adapters.ItemAdapter;
 import com.kkontagion.flipmenu.objects.Item;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MenuActivity extends AppCompatActivity {
+public class MenuActivity extends AppCompatActivity implements ItemAdapter.OnViewClickListener {
 
     ArrayList<Item> items;
     ItemAdapter adapter;
@@ -26,6 +28,9 @@ public class MenuActivity extends AppCompatActivity {
     RecyclerView rv;
     TextView tvClear;
     FloatingActionButton fab;
+
+    JSONArray jsonItems;
+    private int lastItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +46,7 @@ public class MenuActivity extends AppCompatActivity {
         else
             setupItems();
 
-        adapter = new ItemAdapter(getBaseContext(), items);
+        adapter = new ItemAdapter(this, items);
         rv.setAdapter(adapter);
 
         tvClear.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +108,10 @@ public class MenuActivity extends AppCompatActivity {
         ArrayList<String> textTrans, textOrig;
         try {
             jsonOrig = new JSONObject(getIntent().getStringExtra("detectedJSON"));
+
+            jsonItems = ((JSONObject) jsonOrig.getJSONArray("responses").get(0)).getJSONArray("textAnnotations");
+            jsonItems.remove(0);
+            Log.e(getClass().getSimpleName(), "setupItems: " + jsonItems.toString() );
         } catch (Exception e) {
             jsonOrig = new JSONObject();
             Log.e(getClass().getSimpleName(), "setupItems: Error in detected JSON");
@@ -110,6 +119,7 @@ public class MenuActivity extends AppCompatActivity {
         textTrans = getIntent().getStringArrayListExtra("translatedText");
         textOrig = getIntent().getStringArrayListExtra("detectedText");
         Log.d(getClass().getSimpleName(), "setupItems ORIG: " + jsonOrig.toString());
+
 
         if (textTrans.size() < 2) {
             char orig = 'a';
@@ -122,7 +132,43 @@ public class MenuActivity extends AppCompatActivity {
                 Item me = new Item(i, textTrans.get(i), textOrig.get(i), det[0]);
                 if (det.length > 1)
                     me.setDescription(det[1]);
-                items.add(me);
+
+                // setup XY
+                try {
+                    // get Start XY
+                    for (int o=lastItem; o<jsonItems.length(); o++) {
+                        if (me.getStartXY()[0] > 0 && me.getEndXY()[0] > 0) // both already set. break.
+                            break;
+                        JSONObject obj;
+                        obj = (JSONObject) jsonItems.get(o);
+                        String desc = obj.getString("description");
+                        if (me.getOriginal().startsWith(desc)) {
+                            lastItem = o + me.getName().split(" ").length + me.getDescription().split(" ").length - 1;
+                            JSONObject xy = (JSONObject) getXYBounds(obj).get(0);
+                            Log.d(getClass().getSimpleName(), "setupItems: " + me.getName() + " start: " + xy.toString());
+                            me.setStartXY(new int[] {xy.getInt("x"), xy.getInt("y")});
+                            continue;
+                        }
+
+                        // get End XY
+                        if (me.getOriginal().endsWith(desc)) {
+                            lastItem = o;
+                            JSONObject xy = (JSONObject) getXYBounds(obj).get(3);
+
+                            Log.d(getClass().getSimpleName(), "setupItems: " + me.getName() + " end: " + xy.toString());
+                            me.setEndXY(new int[] {xy.getInt("x"), xy.getInt("y")});
+                        }
+                    }
+
+                    Log.d(getClass().getSimpleName(), "setupItems: " + me);
+                    items.add(me);
+                } catch (Exception e) {
+                    Log.e(getClass().getSimpleName(), "Error getting boundingPolys.");
+                    items.add(me);
+                }
+
+
+
             }
         }
     }
@@ -159,5 +205,17 @@ public class MenuActivity extends AppCompatActivity {
                 i.setQuantity(0);
         }
         adapter.notifyDataSetChanged();
+    }
+
+    private JSONArray getXYBounds(JSONObject obj) throws JSONException {
+        return obj.getJSONObject("boundingPoly").getJSONArray("vertices");
+    }
+
+    @Override
+    public void seeBoundingBox(Item item) {
+        Intent i = new Intent(this, SeeItemActivity.class);
+        i.putExtra("item", item);
+        i.putExtra("imgpath", getIntent().getStringExtra("imgpath"));
+        startActivityForResult(i, 10);
     }
 }

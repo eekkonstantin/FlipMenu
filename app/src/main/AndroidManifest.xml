@@ -57,8 +57,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kkontagion.flipmenu.MenuActivity" />
         </activity>
-        <activity android:name=".HistoryActivity"
+        <activity
+            android:name=".HistoryActivity"
             android:parentActivityName=".MainActivity" />
+        <activity android:name=".SeeItemActivity"></activity>
     </application>
 
 </manifest>

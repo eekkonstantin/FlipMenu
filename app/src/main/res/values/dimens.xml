@@ -14,4 +14,7 @@
 
     <dimen name="action_small">20dp</dimen>
     <dimen name="item_space">10dp</dimen>
+
+    <dimen name="bb_w">50dp</dimen>
+    <dimen name="bb_h">20dp</dimen>
 </resources>

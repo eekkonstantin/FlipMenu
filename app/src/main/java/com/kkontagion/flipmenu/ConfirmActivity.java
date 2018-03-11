@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpTransport;
@@ -44,6 +45,8 @@ import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -79,6 +82,8 @@ public class ConfirmActivity extends AppCompatActivity {
     AlertDialog.Builder builder;
     RelativeLayout rlLoading;
 
+    boolean fromHistory = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +104,35 @@ public class ConfirmActivity extends AppCompatActivity {
 
         statusText =  findViewById(R.id.tv_final);
 
-        //Image handling
-        filename = getIntent().getStringExtra("filepath");
-        imageUri = Uri.fromFile(new File(filename));
-        Log.d(getClass().getSimpleName(), "onCreate: " + imageUri.getLastPathSegment());
         imgPreview = findViewById(R.id.img_preview);
         tvImageDetails = findViewById(R.id.tv_before);
-        uploadImage(imageUri);
+
+
+        filename = getIntent().getStringExtra("filepath");
+        imageUri = Uri.fromFile(new File(filename));
+
+        fromHistory = getIntent().getBooleanExtra("fromHistory", false);
+        if (fromHistory) {
+            Glide.with(this).load(new File(filename)).into(imgPreview);
+            try {
+                JSONObject json = new JSONObject(
+                        getSharedPreferences(
+                                imageUri.getLastPathSegment().split("\\.")[0], MODE_PRIVATE
+                        ).getString("jsondata", "")
+                );
+                this.message = ((JSONObject) ((JSONObject) json.getJSONArray("responses").get(0))
+                                        .getJSONArray("textAnnotations").get(0)
+                                ).getString("description");
+                formatDetectedText();
+                detectDone();
+            } catch (Exception e) {
+                Log.e(getClass().getSimpleName(), "onCreate: fuck");
+            }
+        } else {
+            //Image handling
+            Log.d(getClass().getSimpleName(), "onCreate: " + imageUri.getLastPathSegment());
+            uploadImage(imageUri);
+        }
 
         //Buttons
         btCfm = findViewById(R.id.bt_confirm);
@@ -434,13 +461,15 @@ public class ConfirmActivity extends AppCompatActivity {
                 rlLoading.setVisibility(View.GONE);
                 statusText.setText(status);
 
-                // save data
-                String fname = imageUri.getLastPathSegment().split("\\.")[0];
-                SharedPreferences.Editor spE = getSharedPreferences(fname, MODE_PRIVATE).edit();
-                spE.putString("jsondata", jsonTextDetect)
-                        .putString("location", null) // TODO get location
-                        .putLong("datetime", Calendar.getInstance().getTimeInMillis())
-                        .apply();
+                if (!fromHistory) {
+                    // save data
+                    String fname = imageUri.getLastPathSegment().split("\\.")[0];
+                    SharedPreferences.Editor spE = getSharedPreferences(fname, MODE_PRIVATE).edit();
+                    spE.putString("jsondata", jsonTextDetect)
+                            .putString("location", null) // TODO get location
+                            .putLong("datetime", Calendar.getInstance().getTimeInMillis())
+                            .apply();
+                }
             }
         }.start();
 
@@ -459,6 +488,7 @@ public class ConfirmActivity extends AppCompatActivity {
         i.putExtra("detectedJSON", jsonTextDetect);
         i.putExtra("detectedText", transHolder);
         i.putExtra("translatedText", textTranslated);
+        i.putExtra("imgpath", imageUri.getPath());
         startActivity(i);
     }
 

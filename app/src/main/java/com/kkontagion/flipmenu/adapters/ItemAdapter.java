@@ -1,5 +1,6 @@
 package com.kkontagion.flipmenu.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -27,6 +28,7 @@ import java.util.List;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
     Context ctx;
+    OnViewClickListener listener;
     ArrayList<Item> items;
     boolean enableClear = false;
 
@@ -112,32 +114,36 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                         items.remove(items.indexOf(item));
                         notifyDataSetChanged();
                     } else { // TODO: Show in original image.
-
+                        listener.seeBoundingBox(item);
                     }
                 }
             });
         }
     }
 
-    public ItemAdapter(Context ctx, ArrayList<Item> items) {
+    public ItemAdapter(Activity ctx, ArrayList<Item> items) {
         this.ctx = ctx;
         this.items = items;
+        this.listener = (OnViewClickListener) ctx;
     }
-    public ItemAdapter(Context ctx, ArrayList<Item> items, boolean hasPadding) {
+    public ItemAdapter(Activity ctx, ArrayList<Item> items, boolean hasPadding) {
         this.ctx = ctx;
         this.items = items;
         this.hasPadding = hasPadding;
+        this.listener = (OnViewClickListener) ctx;
     }
-    public ItemAdapter(boolean enableClear, Context ctx, ArrayList<Item> items) {
+    public ItemAdapter(boolean enableClear, Activity ctx, ArrayList<Item> items) {
         this.ctx = ctx;
         this.items = items;
         this.enableClear = enableClear;
+        this.listener = (OnViewClickListener) ctx;
     }
-    public ItemAdapter(boolean enableClear, Context ctx, ArrayList<Item> items, boolean hasPadding) {
+    public ItemAdapter(boolean enableClear, Activity ctx, ArrayList<Item> items, boolean hasPadding) {
         this.ctx = ctx;
         this.items = items;
         this.hasPadding = hasPadding;
         this.enableClear = enableClear;
+        this.listener = (OnViewClickListener) ctx;
     }
 
     @Override
@@ -158,5 +164,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public interface OnViewClickListener {
+        void seeBoundingBox(Item item);
     }
 }

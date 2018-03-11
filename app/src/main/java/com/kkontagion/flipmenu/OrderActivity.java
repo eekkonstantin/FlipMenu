@@ -40,7 +40,7 @@ public class OrderActivity extends AppCompatActivity {
 
         orders = getIntent().getParcelableArrayListExtra("items");
         rv = findViewById(R.id.rv);
-        adapter = new ItemAdapter(true, getBaseContext(), orders);
+        adapter = new ItemAdapter(true, this, orders);
         rv.setAdapter(adapter);
 
         tvClear = findViewById(R.id.bt_clear);

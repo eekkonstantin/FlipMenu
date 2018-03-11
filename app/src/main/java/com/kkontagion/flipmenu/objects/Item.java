@@ -2,9 +2,7 @@ package com.kkontagion.flipmenu.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-
-import java.io.Serializable;
+import android.util.Log;
 
 /**
  * Created by Kon on 4/3/2018.
@@ -14,6 +12,8 @@ public class Item implements Parcelable {
     String original, translated;
     String name, description;
     int id, quantity;
+    int[] startXY = new int[2], endXY = new int[2];
+
 
     public Item(int id, String translated, String original) {
         this.id = id;
@@ -55,6 +55,8 @@ public class Item implements Parcelable {
         parcel.writeString(translated);
         parcel.writeString(name);
         parcel.writeString(description);
+        parcel.writeIntArray(startXY);
+        parcel.writeIntArray(endXY);
     }
 
     public static final Parcelable.Creator<Item> CREATOR
@@ -75,6 +77,31 @@ public class Item implements Parcelable {
         this.translated = in.readString();
         this.name = in.readString();
         this.description = in.readString();
+        in.readIntArray(startXY);
+        in.readIntArray(endXY);
+    }
+
+    public int[] getStartXY() {
+        return startXY;
+    }
+
+    public void setStartXY(int[] startXY) {
+        if (endXY[0] > 0 && startXY[0] > endXY[0]) {
+            Log.e(getClass().getSimpleName(), "setStartXY: SWITCHING");
+            // switch
+            int[] hold = endXY;
+            this.endXY = startXY;
+            this.startXY = hold;
+        } else
+            this.startXY = startXY;
+    }
+
+    public int[] getEndXY() {
+        return endXY;
+    }
+
+    public void setEndXY(int[] endXY) {
+        this.endXY = endXY;
     }
 
     public int getId() {
@@ -136,7 +163,10 @@ public class Item implements Parcelable {
 
     @Override
     public String toString() {
-        return "ID " + id + ": " + translated + "(" + original + ") - " + quantity;
+        return "ID " + id + ": " + translated + "(" + original + ") "
+                + "{" + startXY[0] + "," + startXY[1] + "} & {"
+                + endXY[0] + "," + endXY[1]
+                + "} - " + quantity;
     }
 
     @Override
