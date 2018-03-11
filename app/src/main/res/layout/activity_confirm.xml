@@ -22,15 +22,18 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/tv_selectlang"
-        android:visibility="visible"
-        android:entries="@array/list_preference_language" />
+        android:entries="@array/list_preference_language"
+        android:paddingBottom="@dimen/item_space"
+        android:paddingTop="@dimen/item_space"
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/img_preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/sp_lang"
+        android:layout_below="@+id/et_location"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/app_name"
         app:srcCompat="@drawable/fancaidan" />
@@ -69,16 +72,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/item_space"
+        android:paddingTop="@dimen/item_space">
 
         <ImageButton
             android:id="@+id/bt_reject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:contentDescription="@android:string/no"
-            android:paddingBottom="15dp"
+            android:foregroundGravity="center_vertical"
+            android:tint="@color/colorAccent"
             app:srcCompat="@drawable/ic_redo" />
 
         <ImageButton
@@ -88,6 +96,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:contentDescription="@android:string/yes"
+            android:tint="@color/colorAccent"
             android:visibility="visible"
             app:srcCompat="@drawable/ic_tick" />
     </LinearLayout>
@@ -97,7 +106,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/overlay"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
 
         <ProgressBar
             android:id="@+id/pb_loading"
@@ -122,6 +132,18 @@
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             android:textColor="@android:color/white" />
     </RelativeLayout>
+
+    <EditText
+        android:id="@+id/et_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sp_lang"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:ems="10"
+        android:hint="@string/cfm_location"
+        android:inputType="textPersonName" />
 
 
 </RelativeLayout>

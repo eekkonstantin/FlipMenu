@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -82,6 +83,7 @@ public class ConfirmActivity extends AppCompatActivity {
     String chosenLang, filename,status,message = "";
     AlertDialog.Builder builder;
     RelativeLayout rlLoading;
+    EditText etLocation;
 
     boolean fromHistory = false;
 
@@ -97,6 +99,8 @@ public class ConfirmActivity extends AppCompatActivity {
 //                R.array.list_preference_language, android.R.layout.simple_spinner_item);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        spinner.setAdapter(adapter);
+
+        etLocation = findViewById(R.id.et_location);
 
         tvTranslated =  findViewById(R.id.tv_translated);
         rlLoading = findViewById(R.id.rl_loading);
@@ -455,11 +459,13 @@ public class ConfirmActivity extends AppCompatActivity {
                 statusText.setText(status);
 
                 if (!fromHistory) {
+                    // get location
+                    String loc = etLocation.getText().toString();
                     // save data
                     String fname = imageUri.getLastPathSegment().split("\\.")[0];
                     SharedPreferences.Editor spE = getSharedPreferences(fname, MODE_PRIVATE).edit();
                     spE.putString("jsondata", jsonTextDetect)
-                            .putString("location", null) // TODO get location
+                            .putString("location", (loc.length() > 0 ? loc : getString(R.string.history_location))) // TODO get location
                             .putLong("datetime", Calendar.getInstance().getTimeInMillis())
                             .apply();
                 }
