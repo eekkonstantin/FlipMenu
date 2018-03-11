@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,10 +29,14 @@ public class SeeItemActivity extends AppCompatActivity {
         this.item = getIntent().getParcelableExtra("item");
         Log.d(getClass().getSimpleName(), "onCreate: " + item);
 
-        int tbarH = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0)
-            tbarH = getResources().getDimensionPixelSize(resourceId);
+        // Calculate ActionBar height
+        int tbarH = 10;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+            tbarH += TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+//        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+//        if (resourceId > 0)
+//            tbarH += getResources().getDimensionPixelSize(resourceId);
 
         img = findViewById(R.id.img);
         Glide.with(this).load(new File(getIntent().getStringExtra("imgpath"))).into(img);

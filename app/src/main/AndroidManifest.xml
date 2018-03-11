@@ -59,8 +59,10 @@
         </activity>
         <activity
             android:name=".HistoryActivity"
+            android:label="@string/title_activity_history"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".SeeItemActivity"></activity>
+        <activity android:name=".SeeItemActivity"
+            android:parentActivityName=".MenuActivity" />
     </application>
 
 </manifest>
