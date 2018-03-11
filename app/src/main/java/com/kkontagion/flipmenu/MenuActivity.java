@@ -106,6 +106,7 @@ public class MenuActivity extends AppCompatActivity implements ItemAdapter.OnVie
 
         JSONObject jsonOrig;
         ArrayList<String> textTrans, textOrig;
+        Log.d(getClass().getSimpleName(), getIntent().getStringExtra("detectedJSON"));
         try {
             jsonOrig = new JSONObject(getIntent().getStringExtra("detectedJSON"));
 

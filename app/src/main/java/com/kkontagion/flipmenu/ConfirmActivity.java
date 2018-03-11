@@ -122,6 +122,7 @@ public class ConfirmActivity extends AppCompatActivity {
             Glide.with(this).load(new File(filename)).into(imgPreview);
             HistoryItem hItem = getIntent().getParcelableExtra("historyItem");
             this.message = hItem.getFullText();
+            this.jsonTextDetect = hItem.getJsonData().toString();
             formatDetectedText();
             detectDone();
         } else {
