@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     private void accessCamera() {
@@ -221,6 +222,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_history:
                 // TODO Kon: change to history page
                 startActivity(new Intent(this, HistoryActivity.class));
+                break;
+            case R.id.nav_help:
+                startActivity(new Intent(this, howtouse_Activity.class));
                 break;
         }
 
