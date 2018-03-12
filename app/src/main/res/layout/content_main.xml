@@ -32,11 +32,11 @@
             android:layout_centerHorizontal="true"
             android:layout_marginEnd="@dimen/bigbt_sides"
             android:layout_marginStart="@dimen/bigbt_sides"
-            android:backgroundTint="@color/colorPrimaryLight"
+            android:backgroundTint="@color/colorAccentLight"
             android:elegantTextHeight="true"
             android:padding="@dimen/bigbt_padding"
             android:text="@string/translate_menu"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/bigbt_text_size" />
 
         <Button
@@ -48,12 +48,12 @@
             android:layout_below="@+id/bt_translate"
             android:layout_marginEnd="@dimen/bigbt_sides"
             android:layout_marginStart="@dimen/bigbt_sides"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/colorPrimaryLight"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="@color/colorAccentLight"
             android:elegantTextHeight="true"
             android:padding="@dimen/bigbt_padding"
             android:text="@string/help"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/bigbt_text_size" />
     </LinearLayout>
 
