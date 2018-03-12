@@ -61,6 +61,7 @@
 
     <string name="title_activity_history">Menu History</string>
     <string name="history_location">Unknown Location</string>
+    <string name="history_none">No menus in history.</string>
 
     <string name="title_activity_see">Original Menu</string>
 

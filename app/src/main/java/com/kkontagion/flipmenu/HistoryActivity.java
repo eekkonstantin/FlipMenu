@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.kkontagion.flipmenu.adapters.HistoryAdapter;
 import com.kkontagion.flipmenu.objects.HistoryItem;
@@ -33,16 +35,22 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
         ArrayList<String> imagesUri = imageRetrieval();
         Log.d("penis", imagesUri.toString());
 
+
         // Kon:
-        //  1) get SharedPrefs for each image (ref. ConfirmActivity:440), and assign to a HistoryItem with the image
-        hItems = new ArrayList<>();
-        for (String name : imagesUri) {
-            Uri uri = Uri.parse(name);
-            hItems.add(new HistoryItem(name, getSharedPreferences(uri.getLastPathSegment().split("\\.")[0], MODE_PRIVATE), this));
+        if (imagesUri.isEmpty()) {
+            TextView tv = findViewById(R.id.tv_empty);
+            tv.setVisibility(View.VISIBLE);
+        } else {
+            //  1) get SharedPrefs for each image (ref. ConfirmActivity:440), and assign to a HistoryItem with the image
+            hItems = new ArrayList<>();
+            for (String name : imagesUri) {
+                Uri uri = Uri.parse(name);
+                hItems.add(new HistoryItem(name, getSharedPreferences(uri.getLastPathSegment().split("\\.")[0], MODE_PRIVATE), this));
+            }
+            //  2) load into an adapter and display in the RecyclerView with item_history layout.
+            adapter = new HistoryAdapter(this, hItems);
+            rv.setAdapter(adapter);
         }
-        //  2) load into an adapter and display in the RecyclerView with item_history layout.
-        adapter = new HistoryAdapter(this, hItems);
-        rv.setAdapter(adapter);
     }
 
     private ArrayList<String> imageRetrieval() {
@@ -53,12 +61,12 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
         {
             listFile = file.listFiles();
 
+            if (listFile.length > 0) {
+                for (int i = 0; i < listFile.length; i++) {
 
-            for (int i = 0; i < listFile.length; i++)
-            {
+                    imagesLinks.add(listFile[i].getAbsolutePath());
 
-                imagesLinks.add(listFile[i].getAbsolutePath());
-
+                }
             }
         }
 
