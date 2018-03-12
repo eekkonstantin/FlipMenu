@@ -12,7 +12,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     private Context context;
     private LayoutInflater layoutInflater;
-    private Integer [] images = {R.drawable.fancaidan,R.drawable.ic_action_name,R.drawable.ic_cancel};
+    private Integer [] images = {R.drawable.slide1,R.drawable.slide2,R.drawable.slide3,R.drawable.slide4,R.drawable.slide5,R.drawable.slide6};
 
     public ViewPagerAdapter(Context context) {
         this.context = context;
