@@ -152,6 +152,7 @@ public class ConfirmActivity extends AppCompatActivity {
                 // Show progressbar
                 tvLoading.setText(R.string.progress_translate);
                 rlLoading.setVisibility(View.VISIBLE);
+                etLocation.setEnabled(false);
 
                 // Select Language
                 chosenLang = getResources().getStringArray(R.array.list_preference_language_values)[spinner.getSelectedItemPosition()];
