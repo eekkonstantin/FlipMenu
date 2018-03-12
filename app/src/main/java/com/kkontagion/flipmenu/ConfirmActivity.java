@@ -80,12 +80,13 @@ public class ConfirmActivity extends AppCompatActivity {
     ArrayAdapter<CharSequence> adapter;
     Uri imageUri;
     Boolean isEmpty = false;
-    String chosenLang, filename,status,message = "";
+    String chosenLang, filename,status,message = "", spName;
     AlertDialog.Builder builder;
     RelativeLayout rlLoading;
     EditText etLocation;
 
     boolean fromHistory = false;
+    HistoryItem hItem = null;
 
 
     @Override
@@ -120,11 +121,16 @@ public class ConfirmActivity extends AppCompatActivity {
 
         filename = getIntent().getStringExtra("filepath");
         imageUri = Uri.fromFile(new File(filename));
+        spName = imageUri.getLastPathSegment().split("\\.")[0];
 
         fromHistory = getIntent().getBooleanExtra("fromHistory", false);
         if (fromHistory) {
+            this.hItem = getIntent().getParcelableExtra("historyItem");
+            if (hItem.getLocation().equalsIgnoreCase(getString(R.string.history_location)))
+                etLocation.setHint(hItem.getLocation());
+            else
+                etLocation.setText(hItem.getLocation());
             Glide.with(this).load(new File(filename)).into(imgPreview);
-            HistoryItem hItem = getIntent().getParcelableExtra("historyItem");
             this.message = hItem.getFullText();
             this.jsonTextDetect = hItem.getJsonData().toString();
             formatDetectedText();
@@ -150,6 +156,12 @@ public class ConfirmActivity extends AppCompatActivity {
                 // Select Language
                 chosenLang = getResources().getStringArray(R.array.list_preference_language_values)[spinner.getSelectedItemPosition()];
                 Log.d(getClass().getSimpleName(), "onClick: " + chosenLang);
+
+                String loc = etLocation.getText().toString();
+                Log.d(getClass().getSimpleName(), "onClick: Saving updated location.");
+                getSharedPreferences(spName, MODE_PRIVATE).edit()
+                        .putString("location", (loc.length() > 0 ? loc : getString(R.string.history_location)))
+                        .apply();
 
                 translateText(transHolder);
             }
@@ -458,14 +470,17 @@ public class ConfirmActivity extends AppCompatActivity {
                 rlLoading.setVisibility(View.GONE);
                 statusText.setText(status);
 
+                // get location
+                String loc = etLocation.getText().toString();
+
+                Log.d(getClass().getSimpleName(), "onFinish: from history? " + fromHistory);
+
                 if (!fromHistory) {
-                    // get location
-                    String loc = etLocation.getText().toString();
                     // save data
-                    String fname = imageUri.getLastPathSegment().split("\\.")[0];
-                    SharedPreferences.Editor spE = getSharedPreferences(fname, MODE_PRIVATE).edit();
+
+                    SharedPreferences.Editor spE = getSharedPreferences(spName, MODE_PRIVATE).edit();
                     spE.putString("jsondata", jsonTextDetect)
-                            .putString("location", (loc.length() > 0 ? loc : getString(R.string.history_location))) // TODO get location
+                            .putString("location", (loc.length() > 0 ? loc : getString(R.string.history_location)))
                             .putLong("datetime", Calendar.getInstance().getTimeInMillis())
                             .apply();
                 }
