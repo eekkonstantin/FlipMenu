@@ -56,6 +56,14 @@ public class MainActivity extends AppCompatActivity
                 doCamera();
             }
         });
+        // Kon
+        Button helpButton = findViewById(R.id.bt_how);
+        helpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getBaseContext(), howtouse_Activity.class));
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -228,7 +236,6 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.nav_history:
-                // TODO Kon: change to history page
                 startActivity(new Intent(this, HistoryActivity.class));
                 break;
             case R.id.nav_help:
