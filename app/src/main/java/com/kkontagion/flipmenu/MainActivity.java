@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (getIntent().getBooleanExtra("fromHelp", false))
+            doCamera();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -49,13 +53,7 @@ public class MainActivity extends AppCompatActivity
         clickButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(CheckingPermissionIsEnabledOrNot())
-                {
-                    accessCamera();
-                }
-                else {
-                    RequestMultiplePermission();
-                }
+                doCamera();
             }
         });
 
@@ -68,6 +66,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+    }
+
+    private void doCamera() {
+        if(CheckingPermissionIsEnabledOrNot())
+        {
+            accessCamera();
+        }
+        else {
+            RequestMultiplePermission();
+        }
     }
 
     private void accessCamera() {

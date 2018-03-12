@@ -63,5 +63,7 @@
     <string name="history_location">Unknown Location</string>
 
     <string name="title_activity_see">Original Menu</string>
+
     <string name="title_activity_usage">How to Use</string>
+    <string name="use_go">Try it now!</string>
 </resources>
