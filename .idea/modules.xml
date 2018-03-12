@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FlipMenu.iml" filepath="$PROJECT_DIR$/FlipMenu.iml" />
+      <module fileurl="file://C:\Users\Denzel\Documents\GitHub\FlipMenu\FlipMenu.iml" filepath="C:\Users\Denzel\Documents\GitHub\FlipMenu\FlipMenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Denzel\Documents\GitHub\FlipMenu\app\app.iml" filepath="C:\Users\Denzel\Documents\GitHub\FlipMenu\app\app.iml" />
     </modules>
   </component>
 </project>
