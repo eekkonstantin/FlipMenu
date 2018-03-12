@@ -21,7 +21,7 @@ import com.kkontagion.flipmenu.objects.Item;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class OrderActivity extends AppCompatActivity {
+public class OrderActivity extends AppCompatActivity implements ItemAdapter.OnViewClickListener {
 
     ArrayList<Item> orders;
     ItemAdapter adapter;
@@ -144,5 +144,10 @@ public class OrderActivity extends AppCompatActivity {
         Intent newData = new Intent();
         newData.putExtra("orders", orders);
         return newData;
+    }
+
+    @Override
+    public void seeBoundingBox(Item item) {
+        // Empty function
     }
 }
