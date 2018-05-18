@@ -155,7 +155,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         Item item = items.get(position);
-        holder.tvOrig.setText(item.getDescription());
+        if (enableClear) // on summary page
+            holder.tvOrig.setText(item.getOriginal().split("///")[0]);
+        else
+            holder.tvOrig.setText(item.getDescription());
         holder.tvTrans.setText(item.getName());
         holder.etQty.setText(item.getQuantity() + "");
         holder.item = item;

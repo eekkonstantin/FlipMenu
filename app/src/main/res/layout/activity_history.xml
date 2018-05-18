@@ -13,4 +13,14 @@
         android:layout_alignParentStart="true"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="false"
+        android:layout_centerInParent="true"
+        android:text="@string/history_none"
+        android:visibility="gone" />
+
 </RelativeLayout>

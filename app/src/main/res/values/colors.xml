@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#258039</color>
-    <color name="colorPrimaryDark">#195626</color>
-    <color name="colorPrimaryLight">#cdcdc0</color>
-    <color name="colorAccent">#d61800</color>
-    <color name="colorAccentLight">#DDBC95</color>
+    <color name="colorPrimary">#5f938e</color>
+    <color name="colorPrimaryDark">#406461</color>
+    <color name="colorPrimaryLight">#f2d388</color>
+    <color name="colorBackground">#f5f1e6</color>
+    <color name="colorAccent">#874c62</color>
+    <color name="colorAccentLight">#c98474</color>
     <color name="overlay">#DD000000</color>
+    <color name="cardview_light_background">#f5f1e6</color>
     <!--<color name="colorPrimary">#626D71</color>-->
     <!--<color name="colorPrimaryDark">#4b5458</color>-->
     <!--<color name="colorPrimaryLight">#CDCDC0</color>-->

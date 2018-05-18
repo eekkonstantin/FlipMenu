@@ -80,27 +80,6 @@ public class MenuActivity extends AppCompatActivity implements ItemAdapter.OnVie
         this.items = savedInstanceState.getParcelableArrayList("items");
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.gocart, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.action_cart:
-                Intent cart = new Intent(this, OrderActivity.class);
-//                home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                cart.putExtra("items", collateOrders());
-                startActivityForResult(cart, 200);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void setupItems() {
         items = new ArrayList<>();
 
@@ -122,7 +101,7 @@ public class MenuActivity extends AppCompatActivity implements ItemAdapter.OnVie
         Log.d(getClass().getSimpleName(), "setupItems ORIG: " + jsonOrig.toString());
 
 
-        if (textTrans.size() < 2) {
+        if (textTrans.size() < 1) {
             char orig = 'a';
             char trans = 'z';
             for (int i = 0; i < 26; i++)
@@ -218,5 +197,32 @@ public class MenuActivity extends AppCompatActivity implements ItemAdapter.OnVie
         i.putExtra("item", item);
         i.putExtra("imgpath", getIntent().getStringExtra("imgpath"));
         startActivityForResult(i, 10);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.gohome, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_home) {
+            Intent i = new Intent(this, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

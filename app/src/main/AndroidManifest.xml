@@ -30,7 +30,7 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".ConfirmActivity"
-            android:label="@string/title_activity_menu"
+            android:label="@string/title_activity_confirm"
             android:parentActivityName=".MainActivity" />
 
         <provider
@@ -59,10 +59,14 @@
         </activity>
         <activity
             android:name=".HistoryActivity"
+            android:label="@string/title_activity_history"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".SeeItemActivity"></activity>
+        <activity android:name=".SeeItemActivity"
+            android:label="@string/title_activity_see"
+            android:parentActivityName=".OrderActivity" />
         <activity
             android:name=".howtouse_Activity"
+            android:label="@string/title_activity_usage"
             android:parentActivityName=".MainActivity" />
 
     </application>

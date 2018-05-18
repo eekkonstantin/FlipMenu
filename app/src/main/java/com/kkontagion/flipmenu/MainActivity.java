@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (getIntent().getBooleanExtra("fromHelp", false))
+            doCamera();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -49,13 +53,15 @@ public class MainActivity extends AppCompatActivity
         clickButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(CheckingPermissionIsEnabledOrNot())
-                {
-                    accessCamera();
-                }
-                else {
-                    RequestMultiplePermission();
-                }
+                doCamera();
+            }
+        });
+        // Kon
+        Button helpButton = findViewById(R.id.bt_how);
+        helpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getBaseContext(), howtouse_Activity.class));
             }
         });
 
@@ -68,6 +74,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+    }
+
+    private void doCamera() {
+        if(CheckingPermissionIsEnabledOrNot())
+        {
+            accessCamera();
+        }
+        else {
+            RequestMultiplePermission();
+        }
     }
 
     private void accessCamera() {
@@ -220,7 +236,6 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.nav_history:
-                // TODO Kon: change to history page
                 startActivity(new Intent(this, HistoryActivity.class));
                 break;
             case R.id.nav_help:

@@ -2,6 +2,7 @@ package com.kkontagion.flipmenu.objects;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -21,6 +22,10 @@ public class HistoryItem implements Parcelable {
     String name, location, fullText;
     Calendar cal;
     int id; // for adapter
+
+    public String getSPName() {
+        return Uri.parse(name).getLastPathSegment().split("\\.")[0];
+    }
 
     @Override
     public int describeContents() {
